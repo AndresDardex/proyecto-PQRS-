@@ -1,130 +1,195 @@
+/* Estilo general del cuerpo */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Fondo claro */
     margin: 0;
     padding: 0;
+    color: #333; /* Color del texto */
 }
 
-.container {
-    max-width: 600px;
-    margin: 50px auto;
+/* Encabezado */
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Carrusel */
+.carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Ocupa toda la pantalla */
+    overflow: hidden;
+    z-index: -1; /* Envía el carrusel al fondo */
+}
+
+.carousel-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Asegura que ocupe todo el carrusel */
+    background-size: cover; /* Ajusta la imagen para cubrir todo el espacio */
+    background-position: center; /* Centra la imagen */
+    opacity: 0; /* Oculta las imágenes por defecto */
+    transition: opacity 1s ease-in-out; /* Transición suave entre imágenes */
+}
+
+.carousel-item.active {
+    opacity: 1; /* Muestra la imagen activa */
+}
+
+/* Contenido centrado sobre el carrusel */
+.overlay-content {
+    position: absolute;
+    top: 100px; /* Altura del header */
+    bottom: 70px; /* Altura del footer */
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    z-index: 1; /* Coloca el contenido sobre el fondo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    padding: 20px; /* Espaciado interno */
+}
+
+/* Estilos para los campos del formulario */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form select {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    padding: 10px; /* Espaciado interno */
+    margin-bottom: 15px; /* Espaciado entre campos */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    transition: border-color 0.3s ease; /* Transición suave */
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus,
+form select:focus {
+    border-color: #007bff; /* Cambia el color del borde al enfocarse */
+    outline: none; /* Elimina el borde predeterminado */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra azul */
+}
+
+form button[type="submit"] {
+    background-color: #007bff; /* Color de fondo */
+    color: white; /* Color del texto */
+    padding: 10px 20px; /* Espaciado interno */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+form button[type="submit"]:hover {
+    background-color: #0056b3; /* Color más oscuro al pasar el mouse */
+}
+
+/* Tarjetas */
+.card {
     padding: 20px;
-    background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-    color: #333;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-form input, form select, form button {
-    margin-bottom: 15px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-form button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-form button:hover {
-    background-color: #0056b3;
-}
-
-.messages {
-    margin: 20px auto;
-    max-width: 600px;
-}
-
-.alert {
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-/* Modal */
-.modal {
-    display: none; /* Oculto por defecto */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
-}
-
-.modal-content {
     background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.modal-content h3 {
+.card h2 {
     margin-bottom: 15px;
     color: #333;
-    font-size: 20px;
 }
 
-.modal-content p {
+.card p {
     margin-bottom: 20px;
     color: #555;
-    font-size: 16px;
 }
 
-.modal-content .btn {
+/* Botones */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn {
     padding: 10px 20px;
-    margin: 5px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    text-decoration: none;
+    text-align: center;
 }
 
-.modal-content .btn-primary {
+.btn-primary {
     background-color: #007bff;
     color: white;
 }
 
-.modal-content .btn-primary:hover {
+.btn-primary:hover {
     background-color: #0056b3;
 }
 
-.modal-content .btn-secondary {
+.btn-secondary {
     background-color: #6c757d;
     color: white;
 }
 
-.modal-content .btn-secondary:hover {
+.btn-secondary:hover {
     background-color: #5a6268;
+}
+
+/* Pie de página */
+footer {
+    position: fixed; /* Fija el pie de página en la parte inferior */
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Ocupa todo el ancho */
+    background-color: #f1f1f1; /* Fondo claro */
+    color: #555; /* Color del texto */
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Sombra superior */
 }
