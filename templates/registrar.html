@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registrar Cliente - Sistema PQRS
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Registrar Cliente</h2>
+    <p>Por favor, complete el formulario para registrar un nuevo cliente en el sistema.</p>
+    <form method="post" id="registroForm">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Registrar</button>
+    </form>
+</div>
+
+<!-- Modal de confirmación -->
+{% if registro_exitoso %}
+<div id="registroExitosoModal" class="modal" style="display: block;">
+    <div class="modal-content">
+        <h3>¡Registro Exitoso!</h3>
+        <p>El cliente ha sido registrado correctamente.</p>
+        <!-- Botón para registrar un nuevo usuario -->
+        <a href="/registrar/" class="btn btn-secondary">Registrar Nuevo Usuario</a>
+        <!-- Botón para ir a inicio -->
+        <a href="/" class="btn btn-primary">Ir a Inicio</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+<script>
+    // Botón para cerrar el modal y permitir registrar un nuevo usuario
+    document.getElementById('registrarNuevo').addEventListener('click', function () {
+        const modal = document.getElementById('registroExitosoModal');
+        modal.style.display = 'none'; // Cierra el modal
+        document.getElementById('registroForm').reset(); // Limpia el formulario
+    });
+</script>
+{% endblock %}
