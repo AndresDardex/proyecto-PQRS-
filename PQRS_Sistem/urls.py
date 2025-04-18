@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core.views import registrar_cliente, login_personalizado, vista_cliente, vista_gestor, cerrar_sesion
+from core.views import (
+    registrar_cliente, login_personalizado, vista_cliente,
+    vista_gestor, cerrar_sesion, listar_pqrs_cliente, detalle_pqrs
+)
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +31,9 @@ urlpatterns = [
     path('cliente/', vista_cliente, name='vista_cliente'),
     path('gestor/', vista_gestor, name='vista_gestor'),
     path('logout/', cerrar_sesion, name='cerrar_sesion'),
+    path('cliente/pqrs/', listar_pqrs_cliente, name='listar_pqrs'),
+    path('cliente/pqrs/<int:numero_radicado>/', detalle_pqrs, name='detalle_pqrs'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -31,16 +31,16 @@ class ClienteRegistroForm(forms.ModelForm):
             raise forms.ValidationError("Las contraseñas no coinciden.")
 
 class LoginForm(forms.Form):
-    numero_identificacion = forms.CharField(max_length=50)
-    contrasena = forms.CharField(widget=forms.PasswordInput)
-
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-        self.fields['numero_identificacion'].widget.attrs.update({
+    numero_identificacion = forms.CharField(
+        max_length=50,
+        widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Ingrese su número de identificación'
         })
-        self.fields['contrasena'].widget.attrs.update({
+    )
+    contrasena = forms.CharField(
+        widget=forms.PasswordInput(attrs={
             'class': 'form-control',
             'placeholder': 'Ingrese su contraseña'
         })
+    )

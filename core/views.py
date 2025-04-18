@@ -3,7 +3,8 @@ from django.contrib import messages
 from .forms import ClienteRegistroForm
 from .models import Cliente, Empleado
 from .forms import LoginForm
-
+from django.shortcuts import get_object_or_404
+from .models import PQRS
 
 def home(request):
     return render(request, 'inicio.html')
@@ -63,3 +64,24 @@ def vista_gestor(request):
 def cerrar_sesion(request):
     request.session.flush()  # Elimina todos los datos de sesión
     return redirect('inicio')  # Redirige al home
+
+
+def listar_pqrs_cliente(request):
+    if request.session.get('rol') != 'cliente':
+        return redirect('inicio')
+
+    nombre_usuario = request.session.get('usuario')
+    cliente = get_object_or_404(Cliente, nombre_completo=nombre_usuario)
+    pqrs = PQRS.objects.filter(cliente=cliente).order_by('-fecha_radicado')
+
+    return render(request, 'listar_pqrs.html', {'pqrs_list': pqrs, 'usuario': nombre_usuario})
+
+def detalle_pqrs(request, numero_radicado):
+    if request.session.get('rol') != 'cliente':
+        return redirect('inicio')
+
+    nombre_usuario = request.session.get('usuario')
+    cliente = get_object_or_404(Cliente, nombre_completo=nombre_usuario)
+    pqrs = get_object_or_404(PQRS, numero_radicado=numero_radicado, cliente=cliente)
+
+    return render(request, 'detalle_pqrs.html', {'pqrs': pqrs, 'usuario': nombre_usuario})
