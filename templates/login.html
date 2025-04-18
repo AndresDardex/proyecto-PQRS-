@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Iniciar Sesión - Sistema PQRS
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width: 400px; width: 100%; padding: 2rem;">
+        <h2>Iniciar Sesión</h2>
+        <p>Ingresa tus credenciales para acceder al sistema</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_numero_identificacion">Número de Identificación</label>
+                {{ form.numero_identificacion }}
+            </div>
+            <div class="form-group">
+                <label for="id_contrasena">Contraseña</label>
+                {{ form.contrasena }}
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn">Ingresar</button>
+                <a href="{% url 'inicio' %}" class="btn">Volver al inicio</a>
+            </div>
+        </form>
+
+        {% if messages %}
+            <div class="alert alert-danger mt-3">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

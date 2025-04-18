@@ -29,3 +29,18 @@ class ClienteRegistroForm(forms.ModelForm):
 
         if contrasena and confirmar_contrasena and contrasena != confirmar_contrasena:
             raise forms.ValidationError("Las contraseñas no coinciden.")
+
+class LoginForm(forms.Form):
+    numero_identificacion = forms.CharField(max_length=50)
+    contrasena = forms.CharField(widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['numero_identificacion'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Ingrese su número de identificación'
+        })
+        self.fields['contrasena'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Ingrese su contraseña'
+        })
