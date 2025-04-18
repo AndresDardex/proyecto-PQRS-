@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Detalle de PQRS #{{ pqrs.numero_radicado }}</h2>
+    <p><strong>Tipo:</strong> {{ pqrs.tipo_radicado }}</p>
+    <p><strong>Fecha:</strong> {{ pqrs.fecha_radicado }}</p>
+    <p><strong>Comentarios:</strong> {{ pqrs.comentarios }}</p>
+    
+    {% if pqrs.anexo %}
+        <p><strong>Documento adjunto:</strong> 
+            <a href="{{ pqrs.anexo.url }}" download>Descargar</a>
+        </p>
+    {% else %}
+        <p><em>No se adjuntó documento.</em></p>
+    {% endif %}
+
+    <a href="{% url 'listar_pqrs' %}" class="btn btn-secondary mt-3">Volver al listado</a>
+</div>
+{% endblock %}
