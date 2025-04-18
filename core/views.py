@@ -53,11 +53,11 @@ def login_personalizado(request):
 
 def vista_cliente(request):
     usuario = request.session.get('usuario', 'Invitado')
-    return render(request, 'cliente_dashboard.html', {'usuario': usuario})
+    return render(request, 'vista_cliente.html', {'usuario': usuario})
 
 def vista_gestor(request):
     usuario = request.session.get('usuario', 'Invitado')
-    return render(request, 'gestor_dashboard.html', {'usuario': usuario})
+    return render(request, 'vista_gestor.html', {'usuario': usuario})
 
 # views.py
 
