@@ -125,3 +125,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Carpeta donde se recopila
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirección en vistas que requieren login
+LOGIN_URL = '/login/'  # Ajusta esto al path correcto de tu formulario de login
+LOGIN_REDIRECT_URL = '/crear-pqrs/'  # A dónde redirigir después de login
+LOGOUT_REDIRECT_URL = '/login/'  # A dónde redirigir después del logout
