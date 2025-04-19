@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>PQRS Registradas</h2>
+
+    {% if pqrs_list %}
+        <ul class="list-group">
+            {% for pqrs in pqrs_list %}
+                <li class="list-group-item">
+                    <strong>#{{ pqrs.numero_radicado }}</strong> - {{ pqrs.tipo_radicado }} <br>
+                    <small>{{ pqrs.fecha_radicado }}</small><br>
+                    <a href="{% url 'detalle_pqrs' pqrs.numero_radicado %}" class="btn btn-sm btn-info mt-2">Ver detalles</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tienes PQRS registradas aún.</p>
+    {% endif %}
+
+    <a href="{% url 'vista_cliente' %}" class="btn btn-secondary mt-4">Volver al inicio</a>
+</div>
+{% endblock %}

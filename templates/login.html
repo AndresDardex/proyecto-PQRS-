@@ -15,7 +15,6 @@ Iniciar Sesión - Sistema PQRS
     <div class="card" style="max-width: 400px; width: 100%; padding: 2rem;">
         <h2>Iniciar Sesión</h2>
         <p>Ingresa tus credenciales para acceder al sistema</p>
-
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -28,7 +27,8 @@ Iniciar Sesión - Sistema PQRS
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button type="submit" class="btn">Ingresar</button>
-                <a href="{% url 'inicio' %}" class="btn">Volver al inicio</a>
+                <a href="{% url 'inicio' %}" class="btn btn-secondary">Volver al inicio</a>
+{#                <a href="/iniciar-sesion/" class="btn btn-secondary">Iniciar Sesión</a>#}
             </div>
         </form>
 
