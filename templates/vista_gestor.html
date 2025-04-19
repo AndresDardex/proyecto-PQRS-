@@ -1,3 +1,24 @@
-<h1>Bienvenido Gestor: {{ usuario }}</h1>
-<p>Desde aquí podrás ver, modificar y generar reportes de PQRS.</p>
-<a href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Gestor</title>
+    <link rel="stylesheet" href="{% static 'css/principales/vistas_usuarios.css' %}">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h1 class="titulo-dashboard">Bienvenido Gestor: {{ usuario }}</h1>
+        <p class="descripcion-dashboard">Desde aquí podrás gestionar todas las PQRS.</p>
+
+        <div class="button-container">
+            <!-- Botón para gestionar PQRS -->
+            <a href="{% url 'gestion_pqrs' %}" class="btn btn-primary">Gestionar PQRS</a>
+            <!-- Botón para cerrar sesión -->
+            <a href="{% url 'cerrar_sesion' %}" class="btn btn-secondary">Cerrar sesión</a>
+        </div>
+    </div>
+
+</body>
+</html>

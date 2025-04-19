@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente
+from .models import Cliente, PQRS
 
 class ClienteRegistroForm(forms.ModelForm):
     contrasena = forms.CharField(
@@ -43,4 +43,27 @@ class LoginForm(forms.Form):
             'class': 'form-control',
             'placeholder': 'Ingrese su contraseña'
         })
+    )
+
+class FiltroPQRSForm(forms.Form):
+    numero_radicado = forms.CharField(
+        required=False,
+        label='Número de Radicado',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Buscar por número de radicado'})
+    )
+    tipo_radicado = forms.ChoiceField(
+        required=False,
+        choices=[('', 'Todos')] + PQRS.TIPO_RADICADO_CHOICES,
+        label='Tipo de Radicado',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    fecha_inicio = forms.DateField(
+        required=False,
+        label='Desde',
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    fecha_fin = forms.DateField(
+        required=False,
+        label='Hasta',
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
     )

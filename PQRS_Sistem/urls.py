@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from core.views import (
     registrar_cliente, login_personalizado, vista_cliente,
-    vista_gestor, cerrar_sesion, listar_pqrs_cliente, detalle_pqrs
+    vista_gestor, cerrar_sesion, listar_pqrs_cliente, detalle_pqrs,
+    gestionar_pqrs, detalle_pqrs_gestor
 )
 from django.views.generic import TemplateView
 from django.conf import settings
@@ -30,6 +31,8 @@ urlpatterns = [
     path('iniciar-sesion/', login_personalizado, name='login'),
     path('cliente/', vista_cliente, name='vista_cliente'),
     path('gestor/', vista_gestor, name='vista_gestor'),
+    path('gestor/pqrs/', gestionar_pqrs, name='gestion_pqrs'),
+    path('gestor/pqrs/<int:numero_radicado>/', detalle_pqrs_gestor, name='detalle_pqrs_gestor'),
     path('logout/', cerrar_sesion, name='cerrar_sesion'),
     path('cliente/pqrs/', listar_pqrs_cliente, name='listar_pqrs'),
     path('cliente/pqrs/<int:numero_radicado>/', detalle_pqrs, name='detalle_pqrs'),
