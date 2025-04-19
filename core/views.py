@@ -35,17 +35,12 @@ def login_personalizado(request):
                 cliente = Cliente.objects.get(numero_identificacion=numero_id)
 
                 if cliente.contrasena == contrasena:
-                    # Verificar si también es empleado
-                    if Empleado.objects.filter(cliente=numero_id).exists():
-                        # Redirigir a vista de gestor
-                        request.session['usuario'] = cliente.nombre_completo
-                        request.session['rol'] = 'gestor'
-                        return redirect('vista_gestor')
-                    else:
-                        # Redirigir a vista de cliente
-                        request.session['usuario'] = cliente.nombre_completo
-                        request.session['rol'] = 'cliente'
-                        return redirect('vista_cliente')
+                    request.session['usuario'] = cliente.nombre_completo
+                    request.session['rol'] = 'gestor' if Empleado.objects.filter(
+                        cliente=numero_id).exists() else 'cliente'
+                    request.session['numero_id'] = cliente.numero_identificacion
+
+                    return redirect('vista_gestor' if request.session['rol'] == 'gestor' else 'vista_cliente')
                 else:
                     messages.error(request, 'Contraseña incorrecta.')
             except Cliente.DoesNotExist:
