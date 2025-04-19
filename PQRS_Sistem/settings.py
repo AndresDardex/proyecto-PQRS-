@@ -126,5 +126,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Carpeta donde se recopila
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+<<<<<<< HEAD
+# Redirección en vistas que requieren login
+LOGIN_URL = '/login/'  # Ajusta esto al path correcto de tu formulario de login
+LOGIN_REDIRECT_URL = '/crear-pqrs/'  # A dónde redirigir después de login
+LOGOUT_REDIRECT_URL = '/login/'  # A dónde redirigir después del logout
+=======
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+>>>>>>> origin/main

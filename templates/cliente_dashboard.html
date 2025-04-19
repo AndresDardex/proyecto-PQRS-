@@ -1,0 +1,8 @@
+<h1>Bienvenido Cliente: {{ usuario }}</h1>
+<p>Desde aquí podrás crear y consultar tus PQRS.</p>
+
+<!-- Botón para crear PQRS que redirige a la página de inicio -->
+<a href="{% url 'crear_pqrs' %}" class="btn btn-primary" style="margin-right: 10px;">Crear PQRS</a>
+
+<!-- Botón para cerrar sesión -->
+<a href="{% url 'cerrar_sesion' %}" class="btn btn-secondary">Cerrar sesión</a>

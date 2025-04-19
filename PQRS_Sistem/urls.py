@@ -1,25 +1,15 @@
-"""PQRS_Sistem URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
+<<<<<<< HEAD
+from core.views import (registrar_cliente, login_personalizado, vista_cliente, vista_gestor, cerrar_sesion, crear_pqrs,
+                        error_page)
+=======
 from core.views import (
     registrar_cliente, login_personalizado, vista_cliente,
     vista_gestor, cerrar_sesion, listar_pqrs_cliente, detalle_pqrs,
     gestionar_pqrs, detalle_pqrs_gestor
 )
+>>>>>>> origin/main
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -34,8 +24,13 @@ urlpatterns = [
     path('gestor/pqrs/', gestionar_pqrs, name='gestion_pqrs'),
     path('gestor/pqrs/<int:numero_radicado>/', detalle_pqrs_gestor, name='detalle_pqrs_gestor'),
     path('logout/', cerrar_sesion, name='cerrar_sesion'),
+<<<<<<< HEAD
+    path('crear-pqrs/', crear_pqrs, name='crear_pqrs'),
+    path('error_pagina/', error_page, name='error_pagina'),
+=======
     path('cliente/pqrs/', listar_pqrs_cliente, name='listar_pqrs'),
     path('cliente/pqrs/<int:numero_radicado>/', detalle_pqrs, name='detalle_pqrs'),
+>>>>>>> origin/main
 ]
 
 if settings.DEBUG:

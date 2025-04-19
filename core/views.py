@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+<<<<<<< HEAD
+from .forms import ClienteRegistroForm, LoginForm
+from .models import Cliente, Empleado, PQRS
+=======
 from .forms import ClienteRegistroForm
 from .models import Cliente, Empleado
 from .forms import LoginForm
@@ -8,10 +12,12 @@ from .models import PQRS
 from .forms import FiltroPQRSForm
 from django.http import HttpResponse
 import csv
+>>>>>>> origin/main
 
 
 def home(request):
     return render(request, 'inicio.html')
+
 
 def registrar_cliente(request):
     registro_exitoso = False
@@ -23,6 +29,7 @@ def registrar_cliente(request):
     else:
         form = ClienteRegistroForm()
     return render(request, 'registrar.html', {'form': form, 'registro_exitoso': registro_exitoso})
+
 
 def login_personalizado(request):
     if request.method == 'POST':
@@ -50,14 +57,54 @@ def login_personalizado(request):
 
     return render(request, 'login.html', {'form': form})
 
+
 def vista_cliente(request):
     usuario = request.session.get('usuario', 'Invitado')
     return render(request, 'vista_cliente.html', {'usuario': usuario})
+
 
 def vista_gestor(request):
     usuario = request.session.get('usuario', 'Gestor Invitado')
     return render(request, 'vista_gestor.html', {'usuario': usuario})
 
+<<<<<<< HEAD
+
+def cerrar_sesion(request):
+    request.session.flush()
+    return redirect('inicio')
+
+
+def crear_pqrs(request):
+    numero_id = request.session.get('numero_id')
+    if not numero_id:
+        return redirect('error_pagina')
+
+    try:
+        cliente = Cliente.objects.get(numero_identificacion=numero_id)
+    except Cliente.DoesNotExist:
+        return redirect('error_pagina')
+
+    if request.method == 'POST':
+        tipo = request.POST.get('tipo_radicado')
+        comentarios = request.POST.get('comentarios')
+        anexo = request.FILES.get('anexo')
+
+        PQRS.objects.create(
+            tipo_radicado=tipo,
+            comentarios=comentarios,
+            anexo=anexo,
+            cliente=cliente
+        )
+
+        messages.success(request, '¡Tu PQRS ha sido enviada con éxito!')
+        return redirect('crear_pqrs')
+
+    return render(request, 'crear-pqrs.html', {'usuario': cliente.nombre_completo})
+
+
+def error_page(request):
+    return render(request, 'error_pagina.html')
+=======
 def gestionar_pqrs(request):
     if request.session.get('rol') != 'gestor':
         return redirect('inicio')
@@ -136,3 +183,4 @@ def detalle_pqrs(request, numero_radicado):
 def detalle_pqrs_gestor(request, numero_radicado):
     pqrs = get_object_or_404(PQRS, numero_radicado=numero_radicado)
     return render(request, 'detalle_pqrs_gestor.html', {'pqrs': pqrs})
+>>>>>>> origin/main
