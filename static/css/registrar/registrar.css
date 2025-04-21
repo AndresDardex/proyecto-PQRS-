@@ -1,0 +1,120 @@
+/* Contenedor principal centrado */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Asegura que ocupe el 100% de la pantalla */
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative; /* Posiciona el contenedor para permitir un scroll interno */
+}
+
+/* Tarjeta del formulario con fondo translúcido */
+.form-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  max-height: 80vh;  /* Limita la altura del formulario */
+  overflow-y: auto;  /* Activa el scroll cuando el contenido excede la altura */
+  position: sticky;  /* Fija el formulario al área visible */
+  top: 10vh;  /* Mantiene el formulario a una distancia razonable del top */
+  box-sizing: border-box;
+}
+
+/* Ajustes en los títulos y párrafos */
+.form-card h2, .form-card p {
+  text-align: center;
+    color: black;  /* Establece el color del texto a negro */
+  font-weight: bold;  /* Opcional: hace que el texto sea más visible */
+}
+
+/* Botón de envío */
+.form-card button {
+  width: 100%;
+  margin-top: 15px;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 10px;  /* Reducir el padding en pantallas pequeñas */
+  }
+
+  .form-card {
+    max-width: 90%; /* Ancho máximo ajustado para pantallas más pequeñas */
+    padding: 20px;  /* Reducir el padding */
+  }
+
+  .form-card button {
+    padding: 12px;
+  }
+}
+/* Cambiar el color del texto de los enunciados de los campos a negro */
+.form-card label {
+  color: black;  /* Establece el color del texto a negro */
+  font-weight: bold;  /* Opcional: hace que el texto sea más visible */
+}
+
+/* Si los enunciados están dentro de <p> o algún otro contenedor, ajusta esos elementos */
+.form-card p {
+  color: black;
+  font-weight: normal;  /* Asegura que el texto no sea negrita */
+}
+
+/* Modal ajustado a una ventana más pequeña centrada */
+.modal {
+  position: fixed;
+  z-index: 999;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Centra el modal */
+  width: 400px;  /* Define un ancho fijo para el modal */
+  height: auto;  /* La altura es automática para ajustarse al contenido */
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro translúcido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  width: 100%;  /* Asegura que el contenido ocupe el 100% del contenedor */
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  animation: slideUp 0.4s ease-in-out;
+  color: black;
+}
+
+/* Restante de las animaciones y estilo */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+/* Estilo para los mensajes de error del formulario */
+.errorlist {
+  color: red;
+  margin: 5px 0 10px;
+  font-size: 14px;
+  list-style: none;
+  padding-left: 0;
+}

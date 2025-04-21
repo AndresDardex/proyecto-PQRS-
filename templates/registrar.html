@@ -1,18 +1,30 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Registrar Cliente - Sistema PQRS
 {% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/registrar/registrar.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h2>Registrar Cliente</h2>
-    <p>Por favor, complete el formulario para registrar un nuevo cliente en el sistema.</p>
-    <form method="post" id="registroForm">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Registrar</button>
-    </form>
+<div class="form-container">
+    <div class="form-card">
+        <h2>Registrar Cliente</h2>
+        <p>Por favor, complete el formulario para registrar un nuevo cliente en el sistema.</p>
+        <form method="post" id="registroForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </form>
+
+        <!-- Botón para ir a la página de login -->
+        <a href="/iniciar-sesion/" class="btn btn-secondary" style="margin-top: 15px; display: block; text-align: center;">
+            Ir al inicio de sesión
+        </a>
+    </div>
 </div>
 
 <!-- Modal de confirmación -->
@@ -33,10 +45,13 @@ Registrar Cliente - Sistema PQRS
 {% block script %}
 <script>
     // Botón para cerrar el modal y permitir registrar un nuevo usuario
-    document.getElementById('registrarNuevo').addEventListener('click', function () {
-        const modal = document.getElementById('registroExitosoModal');
-        modal.style.display = 'none'; // Cierra el modal
-        document.getElementById('registroForm').reset(); // Limpia el formulario
-    });
+    const modal = document.getElementById('registroExitosoModal');
+    const registrarNuevo = document.getElementById('registrarNuevo');
+    if (registrarNuevo) {
+        registrarNuevo.addEventListener('click', function () {
+            modal.style.display = 'none';
+            document.getElementById('registroForm').reset();
+        });
+    }
 </script>
 {% endblock %}
