@@ -1,46 +1,74 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Crear PQRS{% endblock %}
 
 {% block content %}
+<div class="container mt-5">
+    <form id="pqrsForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <h2>Crear nueva PQRS</h2>
+            <p>Cliente: {{ usuario }}</p>
+            <label for="tipo_radicado">Tipo de Radicado</label>
+            <select class="form-control" id="tipo_radicado" name="tipo_radicado" required>
+                <option value="">Seleccione una opción</option>
+                <option value="Petición">Petición</option>
+                <option value="Queja">Queja</option>
+                <option value="Reclamo">Reclamo</option>
+                <option value="Sugerencia">Sugerencia</option>
+            </select>
+        </div>
 
-    <div class="container mt-5">
-        <h2>Crear nueva PQRS</h2>
-        <p>Cliente: {{ usuario }}</p>
+        <div class="form-group">
+            <label for="comentarios">Comentarios</label>
+            <textarea class="form-control" id="comentarios" name="comentarios" rows="4" required></textarea>
+        </div>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-success" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="tipo_radicado">Tipo de Radicado</label>
-                <select class="form-control" id="tipo_radicado" name="tipo_radicado" required>
-                    <option value="">Seleccione una opción</option>
-                    <option value="Petición">Petición</option>
-                    <option value="Queja">Queja</option>
-                    <option value="Reclamo">Reclamo</option>
-                    <option value="Sugerencia">Sugerencia</option>
-                </select>
+        <div class="form-group">
+            <label for="anexo">Anexo (opcional)</label>
+            <div class="archivo-container">
+                <input type="file" id="anexo" name="anexo" class="input-oculto" onchange="mostrarNombreArchivo(this)">
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="comentarios">Comentarios</label>
-                <textarea class="form-control" id="comentarios" name="comentarios" rows="4" required></textarea>
-            </div>
+        <button type="submit" id="enviarPQRS" class="btn btn-success mt-3">Enviar PQRS</button>
+        <a href="{% url 'vista_cliente' %}" id="vistaClienteButton" class="btn btn-primary mt-3">Perfil</a>
+    </form>
+</div>
 
-            <div class="form-group">
-                <label for="anexo">Anexo (opcional)</label>
-                <input type="file" class="form-control-file" id="anexo" name="anexo">
-            </div>
-
-            <button type="submit" class="btn btn-success mt-3">Enviar PQRS</button>
-        </form>
+{% if registro_exitoso %}
+<!-- Modal personalizado -->
+<div id="registroExitosoModal" class="modal" style="display: flex;">
+    <div class="modal-content">
+        <h3>¡PQRS registrada exitosamente!</h3>
+        <p>Tu solicitud ha sido enviada correctamente.</p>
+        <a href="{% url 'crear_pqrs' %}" class="btn btn-secondary">Registrar otra PQRS</a>
+        <a href="{% url 'vista_cliente' %}" class="btn btn-primary">Ir al perfil</a>
     </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('registroExitosoModal');
+
+        if (modal) {
+            // Cerrar modal al hacer clic fuera del contenido
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

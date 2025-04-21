@@ -89,6 +89,7 @@ def crear_pqrs(request):
         comentarios = request.POST.get('comentarios')
         anexo = request.FILES.get('anexo')
 
+        # Crear PQRS
         PQRS.objects.create(
             tipo_radicado=tipo,
             comentarios=comentarios,
@@ -96,10 +97,14 @@ def crear_pqrs(request):
             cliente=cliente
         )
 
-        messages.success(request, '¡Tu PQRS ha sido enviada con éxito!')
-        return redirect('crear_pqrs')
+        # Redirigir con bandera para mostrar modal
+        return redirect('/crear-pqrs/?registro_exitoso=1')
 
-    return render(request, 'crear-pqrs.html', {'usuario': cliente.nombre_completo})
+    registro_exitoso = request.GET.get('registro_exitoso') == '1'
+    return render(request, 'crear-pqrs.html', {
+        'usuario': cliente.nombre_completo,
+        'registro_exitoso': registro_exitoso
+    })
 
 
 def error_page(request):
@@ -183,4 +188,6 @@ def detalle_pqrs(request, numero_radicado):
 def detalle_pqrs_gestor(request, numero_radicado):
     pqrs = get_object_or_404(PQRS, numero_radicado=numero_radicado)
     return render(request, 'detalle_pqrs_gestor.html', {'pqrs': pqrs})
+
+
 
