@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from .models import PQRS
 from .forms import FiltroPQRSForm
 from django.http import HttpResponse
+from django.contrib.auth.hashers import check_password
 import csv
 
 
@@ -41,7 +42,7 @@ def login_personalizado(request):
             try:
                 cliente = Cliente.objects.get(numero_identificacion=numero_id)
 
-                if cliente.contrasena == contrasena:
+                if check_password(contrasena, cliente.contrasena): #comparación de la contraseña encriptada
                     request.session['usuario'] = cliente.nombre_completo
                     request.session['rol'] = 'gestor' if Empleado.objects.filter(
                         cliente=numero_id).exists() else 'cliente'
