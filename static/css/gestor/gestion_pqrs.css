@@ -41,7 +41,7 @@ body {
 .pqrs-header {
     background-color: var(--primary-color);
     color: var(--white);
-    padding: 0.4rem 31rem;
+    padding: 0.4rem 2rem;
     box-shadow: var(--shadow);
 }
 
