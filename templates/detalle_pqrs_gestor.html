@@ -1,20 +1,92 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle PQRS | Sistema PQRS</title>
+    <link rel="stylesheet" href="{% static 'css/gestor/detalle_pqrs.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="pqrs-detail-container">
+        <!-- Header con título del sistema -->
+        <header class="pqrs-header">
+            <h1><i class="fas fa-tasks"></i> Sistema PQRS</h1>
+        </header>
 
-{% block content %}
-<div class="container mt-4">
-    <h2>Detalle de PQRS #{{ pqrs.numero_radicado }}</h2>
-    <p><strong>Tipo:</strong> {{ pqrs.tipo_radicado }}</p>
-    <p><strong>Fecha:</strong> {{ pqrs.fecha_radicado }}</p>
-    <p><strong>Comentarios:</strong> {{ pqrs.comentarios }}</p>
+        <!-- Contenido principal -->
+        <main class="pqrs-detail-content">
+            <div class="detail-header">
+                <h2>
+                    <i class="fas fa-file-alt"></i> Detalle de PQRS 
+                    <span class="radicado-number">#{{ pqrs.numero_radicado }}</span>
+                </h2>
+                <div class="status-badge badge-{{ pqrs.estado|lower }}">
+                    {{ pqrs.estado }}
+                </div>
+            </div>
 
-    {% if pqrs.anexo %}
-        <p><strong>Documento adjunto:</strong> 
-            <a href="{{ pqrs.anexo.url }}" download>Descargar</a>
-        </p>
-    {% else %}
-        <p><em>No se adjuntó documento.</em></p>
-    {% endif %}
+            <div class="detail-card">
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> Información Básica</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Tipo:</span>
+                            <span class="detail-value">{{ pqrs.tipo_radicado }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Fecha:</span>
+                            <span class="detail-value">{{ pqrs.fecha_radicado|date:"d/m/Y H:i" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Cliente:</span>
+                            <span class="detail-value">{{ pqrs.cliente.nombre_completo }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Estado:</span>
+                            <span class="detail-value">{{ pqrs.estado }}</span>
+                        </div>
+                    </div>
+                </div>
 
-    <a href="{% url 'gestion_pqrs' %}" class="btn btn-secondary mt-3">Volver al listado</a>
-</div>
-{% endblock %}
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-comment-dots"></i> Comentarios</h3>
+                    <div class="comments-box">
+                        {{ pqrs.comentarios|linebreaks }}
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-paperclip"></i> Documentos Adjuntos</h3>
+                    {% if pqrs.anexo %}
+                        <div class="attachment-box">
+                            <i class="fas fa-file-pdf"></i>
+                            <span class="attachment-name">{{ pqrs.anexo.name|cut:"anexos/" }}</span>
+                            <a href="{{ pqrs.anexo.url }}" download class="btn-download">
+                                <i class="fas fa-download"></i> Descargar
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="no-attachment"><i class="fas fa-times-circle"></i> No se adjuntó documento.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'gestion_pqrs' %}" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Volver al listado
+                </a>
+                <button class="btn btn-print" onclick="window.print()">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="pqrs-footer">
+            <p>&copy; 2025 Sistema PQRS. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>

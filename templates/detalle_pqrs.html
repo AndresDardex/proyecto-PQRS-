@@ -1,20 +1,105 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle PQRS | Sistema PQRS</title>
+    <link rel="stylesheet" href="{% static 'css/cliente/detalle_pqrs_cliente.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="pqrs-detail-container">
+        <!-- Header con título del sistema -->
+        <header class="pqrs-header">
+            <h1><i class="fas fa-tasks"></i> Sistema PQRS</h1>
+        </header>
 
-{% block content %}
-<div class="container mt-4">
-    <h2>Detalle de PQRS #{{ pqrs.numero_radicado }}</h2>
-    <p><strong>Tipo:</strong> {{ pqrs.tipo_radicado }}</p>
-    <p><strong>Fecha:</strong> {{ pqrs.fecha_radicado }}</p>
-    <p><strong>Comentarios:</strong> {{ pqrs.comentarios }}</p>
-    
-    {% if pqrs.anexo %}
-        <p><strong>Documento adjunto:</strong> 
-            <a href="{{ pqrs.anexo.url }}" download>Descargar</a>
-        </p>
-    {% else %}
-        <p><em>No se adjuntó documento.</em></p>
-    {% endif %}
+        <!-- Contenido principal -->
+        <main class="pqrs-detail-content">
+            <div class="detail-header">
+                <h2>
+                    <i class="fas fa-file-alt"></i> Detalle de tu PQRS
+                    <span class="radicado-number">#{{ pqrs.numero_radicado }}</span>
+                </h2>
+                <div class="status-badge badge-{{ pqrs.estado|lower }}">
+                    {{ pqrs.estado }}
+                </div>
+            </div>
 
-    <a href="{% url 'listar_pqrs' %}" class="btn btn-secondary mt-3">Volver al listado</a>
-</div>
-{% endblock %}
+            <div class="detail-card">
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> Información de tu PQRS</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Tipo:</span>
+                            <span class="detail-value">{{ pqrs.tipo_radicado }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Fecha:</span>
+                            <span class="detail-value">{{ pqrs.fecha_radicado|date:"d/m/Y H:i" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Estado:</span>
+                            <span class="detail-value">{{ pqrs.estado }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-comment-dots"></i> Tus Comentarios</h3>
+                    <div class="comments-box">
+                        {{ pqrs.comentarios|linebreaks }}
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3 class="section-title"><i class="fas fa-paperclip"></i> Documentos Adjuntos</h3>
+                    {% if pqrs.anexo %}
+                        <div class="attachment-box">
+                            <i class="fas fa-file-pdf"></i>
+                            <span class="attachment-name">{{ pqrs.anexo.name|cut:"anexos/" }}</span>
+                            <a href="{{ pqrs.anexo.url }}" download class="btn-download">
+                                <i class="fas fa-download"></i> Descargar
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="no-attachment"><i class="fas fa-times-circle"></i> No adjuntaste ningún documento.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Sección de Respuesta (si existe) -->
+                {% if pqrs.respuesta %}
+                <div class="detail-section response-section">
+                    <h3 class="section-title"><i class="fas fa-reply"></i> Respuesta del Administrador</h3>
+                    <div class="response-box">
+                        <div class="response-header">
+                            <span class="response-date">{{ pqrs.fecha_respuesta|date:"d/m/Y H:i" }}</span>
+                        </div>
+                        <div class="response-content">
+                            {{ pqrs.respuesta|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'listar_pqrs' %}" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Volver al listado
+                </a>
+                {% if pqrs.estado == 'PENDIENTE' %}
+                <a href="#" class="btn btn-edit">
+                    <i class="fas fa-edit"></i> Editar PQRS
+                </a>
+                {% endif %}
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="pqrs-footer">
+            <p>&copy; 2025 Sistema PQRS. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>

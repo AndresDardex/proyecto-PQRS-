@@ -1,56 +1,111 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión PQRS</title>
+    <link rel="stylesheet" href="{% static 'css/gestor/gestion_pqrs.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="pqrs-container">
+        <!-- Header con título del sistema -->
+        <header class="pqrs-header">
+            <h1><i class="fas fa-tasks"></i> Sistema PQRS</h1>
+        </header>
 
-{% block content %}
-<div class="container mt-4">
-  <h2 class="mb-3">Bienvenido, {{ usuario }}</h2>
+        <!-- Contenido principal -->
+        <main class="pqrs-content">
+            <div class="user-welcome">
+                <h2>Bienvenido, <span class="username">{{ usuario }}</span></h2>
+                <p>Gestiona las PQRS de los clientes desde esta interfaz</p>
+            </div>
 
-  <form method="get" class="row g-3 mb-3">
-    <div class="col-md-3">{{ form.numero_radicado.label_tag }}{{ form.numero_radicado }}</div>
-    <div class="col-md-3">{{ form.tipo_radicado.label_tag }}{{ form.tipo_radicado }}</div>
-    <div class="col-md-2">{{ form.fecha_inicio.label_tag }}{{ form.fecha_inicio }}</div>
-    <div class="col-md-2">{{ form.fecha_fin.label_tag }}{{ form.fecha_fin }}</div>
-    <div class="col-md-2">
-      <button type="submit" class="btn btn-primary mt-4">Filtrar</button>
+            <!-- Formulario de filtrado -->
+            <form method="get" class="filter-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ form.numero_radicado.label_tag }}
+                        {{ form.numero_radicado }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.tipo_radicado.label_tag }}
+                        {{ form.tipo_radicado }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.fecha_inicio.label_tag }}
+                        {{ form.fecha_inicio }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.fecha_fin.label_tag }}
+                        {{ form.fecha_fin }}
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-filter">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <button type="submit" name="exportar_csv" value="1" class="btn btn-export">
+                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    </button>
+                </div>
+            </form>
+
+            <!-- Tabla de resultados -->
+            <div class="pqrs-table-container">
+                <table class="pqrs-table">
+                    <thead>
+                        <tr>
+                            <th>Número Radicado</th>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Cliente</th>
+                            <th>Comentarios</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pqrs in pqrs_list %}
+                            <tr>
+                                <td data-label="Número Radicado">{{ pqrs.numero_radicado }}</td>
+                                <td data-label="Fecha">{{ pqrs.fecha_radicado|date:"Y-m-d H:i" }}</td>
+                                <td data-label="Tipo"><span class="badge badge-{{ pqrs.tipo_radicado|lower }}">{{ pqrs.tipo_radicado }}</span></td>
+                                <td data-label="Cliente">{{ pqrs.cliente.nombre_completo }}</td>
+                                <td data-label="Comentarios">{{ pqrs.comentarios|truncatechars:50 }}</td>
+                                <td data-label="Acciones">
+                                    <a href="{% url 'detalle_pqrs_gestor' pqrs.numero_radicado %}" class="btn-action btn-view">
+                                        <i class="fas fa-eye"></i> <span class="action-text">Detalles</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="no-results">
+                                <i class="fas fa-info-circle"></i> No se encontraron resultados.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="action-buttons">
+                <a href="{% url 'vista_gestor' %}" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Volver al panel
+                </a>
+                <a href="{% url 'cerrar_sesion' %}" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                </a>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="pqrs-footer">
+            <p>&copy; 2025 Sistema PQRS. Todos los derechos reservados.</p>
+        </footer>
     </div>
-    <div class="col-md-12 text-end">
-      <button type="submit" name="exportar_csv" value="1" class="btn btn-success">Exportar CSV</button>
-    </div>
-  </form>
-
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>Número Radicado</th>
-        <th>Fecha</th>
-        <th>Tipo</th>
-        <th>Cliente</th>
-        <th>Comentarios</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for pqrs in pqrs_list %}
-      <tr>
-        <td>{{ pqrs.numero_radicado }}</td>
-        <td>{{ pqrs.fecha_radicado|date:"Y-m-d H:i" }}</td>
-        <td>{{ pqrs.tipo_radicado }}</td>
-        <td>{{ pqrs.cliente.nombre_completo }}</td>
-        <td>{{ pqrs.comentarios|truncatechars:50 }}</td>
-        <td>
-          <a href="{% url 'detalle_pqrs_gestor' pqrs.numero_radicado %}" class="btn btn-info btn-sm">Ver detalles</a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="6" class="text-center">No se encontraron resultados.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <div class="mt-3 text-end">
-    <a href="{% url 'vista_gestor' %}" class="btn btn-secondary mb-3">Volver al panel principal</a>
-    <a href="{% url 'cerrar_sesion' %}" class="btn btn-danger">Cerrar sesión</a>
-  </div>
-</div>
-{% endblock %}
+</body>
+</html>
