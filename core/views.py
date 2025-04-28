@@ -1,17 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
 from .forms import ClienteRegistroForm, LoginForm
 from .models import Cliente, Empleado, PQRS
-
 from .forms import ClienteRegistroForm
 from .models import Cliente, Empleado
 from .forms import LoginForm
 from django.shortcuts import get_object_or_404
 from .models import PQRS
 from .forms import FiltroPQRSForm
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import make_password
+from django.db import transaction
+from django.db import models, IntegrityError
 import csv
 
 
@@ -191,4 +192,78 @@ def detalle_pqrs_gestor(request, numero_radicado):
     return render(request, 'detalle_pqrs_gestor.html', {'pqrs': pqrs})
 
 
+from django.db import transaction, models
+from django.contrib.auth.hashers import make_password
+from django.db.utils import IntegrityError
+from django.http import JsonResponse
+from .models import Cliente, PQRS
 
+
+def registrar_cliente_pqrs(request):
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                # Obtener datos del formulario
+                numero_documento = request.POST.get('numero_documento')
+                email = request.POST.get('email')
+
+                # Verificar si el cliente ya existe por número de identificación
+                try:
+                    cliente = Cliente.objects.get(numero_identificacion=numero_documento)
+                    usuario_nuevo = False
+                except Cliente.DoesNotExist:
+                    # Si no existe, crear nuevo cliente
+                    cliente_data = {
+                        'tipo_identificacion': request.POST.get('tipo_documento'),
+                        'numero_identificacion': numero_documento,
+                        'nombre_completo': request.POST.get('nombre'),
+                        'correo_electronico': email,
+                        'telefono_movil': request.POST.get('telefono'),
+                        'contrasena': make_password("Rz7U4;6_"),  # Contraseña quemada encriptada
+                    }
+
+                    cliente = Cliente.objects.create(**cliente_data)
+                    usuario_nuevo = True
+
+                # Crear PQRS asociada al cliente (tanto para nuevo como existente)
+                pqrs_data = {
+                    'tipo_radicado': request.POST.get('tipo_radicado'),
+                    'comentarios': request.POST.get('comentarios'),
+                    'cliente': cliente,
+                }
+
+                if 'anexo' in request.FILES:
+                    pqrs_data['anexo'] = request.FILES['anexo']
+
+                pqrs = PQRS.objects.create(**pqrs_data)
+
+                # Configurar sesión solo si es nuevo usuario
+                if usuario_nuevo:
+                    request.session['usuario'] = cliente.nombre_completo
+                    request.session['rol'] = 'cliente'
+                    request.session['numero_id'] = cliente.numero_identificacion
+
+                return JsonResponse({
+                    'success': True,
+                    'numero_radicado': pqrs.numero_radicado,
+                    'usuario_nuevo': usuario_nuevo,
+                    'email': cliente.correo_electronico,
+                    'password': 'Rz7U4;6_' if usuario_nuevo else None,
+                    'message': 'PQRS registrada exitosamente' +
+                               (' y nuevo usuario creado' if usuario_nuevo else '')
+                })
+
+        except IntegrityError as e:
+            return JsonResponse({
+                'success': False,
+                'message': 'Error: El número de documento o correo electrónico ya están registrados.'
+            }, status=400)
+
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al procesar la solicitud: {str(e)}'
+            }, status=500)
+
+    # GET request - mostrar formulario
+    return render(request, 'registrar_cliente.html')
