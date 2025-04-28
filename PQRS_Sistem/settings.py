@@ -135,3 +135,11 @@ LOGOUT_REDIRECT_URL = '/login/'  # A dónde redirigir después del logout
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Configuración para envío de correos electrónicos
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'        # El servidor SMTP de Gmail
+EMAIL_PORT = 587                     # Puerto para TLS
+EMAIL_USE_TLS = True                 # Usar TLS
+EMAIL_HOST_USER = 'comercialkonrad1@gmail.com'    # Tu correo Gmail
+EMAIL_HOST_PASSWORD = 'xjcb msme ilsy ffkh'  # Contraseña de aplicación (no la normal)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

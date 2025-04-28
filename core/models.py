@@ -16,6 +16,9 @@ class Cliente(models.Model):
     correo_electronico = models.EmailField(unique=True)
     telefono_movil = models.CharField(max_length=15)
     contrasena = models.CharField(max_length=100)
+    verificado = models.BooleanField(default=False)
+    codigo_verificacion = models.CharField(max_length=64, blank=True, null=True)
+
 
     def __str__(self):
         return self.nombre_completo

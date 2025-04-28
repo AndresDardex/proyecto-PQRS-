@@ -4,12 +4,13 @@ from django.urls import path
 from core.views import (
     registrar_cliente, login_personalizado, vista_cliente,
     vista_gestor, cerrar_sesion, listar_pqrs_cliente, detalle_pqrs,
-    gestionar_pqrs, detalle_pqrs_gestor, error_page, crear_pqrs, registrar_cliente_pqrs
+    gestionar_pqrs, detalle_pqrs_gestor, error_page, crear_pqrs, registrar_cliente_pqrs, verificar_cuenta
 )
 
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +27,8 @@ urlpatterns = [
     path('cliente/pqrs/', listar_pqrs_cliente, name='listar_pqrs'),
     path('cliente/pqrs/<int:numero_radicado>/', detalle_pqrs, name='detalle_pqrs'),
     path('registrar-pqrs/', registrar_cliente_pqrs, name='registrar_cliente_pqrs'),
+    path('verificar/<str:codigo>/', verificar_cuenta, name='verificar_cuenta'),
+
 ]
 
 if settings.DEBUG:

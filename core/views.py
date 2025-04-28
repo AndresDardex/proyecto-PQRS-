@@ -13,6 +13,9 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.db import models, IntegrityError
+from django.core.mail import send_mail
+from django.conf import settings
+import uuid
 import csv
 
 
@@ -26,12 +29,35 @@ def registrar_cliente(request):
     if request.method == 'POST':
         form = ClienteRegistroForm(request.POST)
         if form.is_valid():
-            form.save()
+            cliente = form.save(commit=False)  # No guarda aún, solo crea el objeto
+
+            # Generar el código de verificación
+            cliente.codigo_verificacion = str(uuid.uuid4())
+            cliente.verificado = False
+
+            cliente.save()  # Ahora sí guardamos en la base de datos
+
+            # Enviar el correo de verificación
+            enviar_correo_verificacion(cliente.correo_electronico, cliente.codigo_verificacion)
+
             registro_exitoso = True
     else:
         form = ClienteRegistroForm()
+
     return render(request, 'registrar.html', {'form': form, 'registro_exitoso': registro_exitoso})
 
+def enviar_correo_verificacion(correo_destino, codigo):
+    asunto = 'Verifica tu cuenta'
+    mensaje = f'Gracias por registrarte. Para activar tu cuenta, haz clic aquí:\n\nhttp://localhost:8000/verificar/{codigo}\n\nSi no te registraste, por favor ignora este mensaje.'
+    remitente = settings.EMAIL_HOST_USER  # Esto depende de tu configuración SMTP
+    send_mail(asunto, mensaje, remitente, [correo_destino])
+
+def verificar_cuenta(request, codigo):
+    cliente = get_object_or_404(Cliente, codigo_verificacion=codigo)
+    cliente.verificado = True
+    cliente.codigo_verificacion = None  # Limpia el código
+    cliente.save()
+    return redirect('iniciar_sesion')  # Lo puedes redirigir a la página de login
 
 def login_personalizado(request):
     if request.method == 'POST':
