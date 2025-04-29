@@ -40,6 +40,13 @@ class PQRS(models.Model):
         ('Reclamo', 'Reclamo'),
         ('Sugerencia', 'Sugerencia'),
     ]
+    
+    ESTADO_RADICADO_CHOICES = [
+        ('Nuevo', 'Nuevo'),
+        ('En Proceso', 'En Proceso'),
+        ('Resuelto', 'Resuelto'),
+        ('Cerrado', 'Cerrado'),
+    ]
 
     numero_radicado = models.AutoField(primary_key=True)
     fecha_radicado = models.DateTimeField(auto_now_add=True)
@@ -47,6 +54,10 @@ class PQRS(models.Model):
     comentarios = models.TextField()
     anexo = models.FileField(upload_to='anexos/', blank=True, null=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='pqrs')
+    estado = models.CharField(max_length=20, choices=ESTADO_RADICADO_CHOICES, default='En Proceso')
+    empleado_asignado = models.ForeignKey(Empleado, on_delete=models.SET_NULL, null=True, blank=True, related_name='pqrs_asignados')
+    justificacion_del_estado = models.TextField(blank=True, null=True)
+    fecha_respuesta = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return f"Radicado #{self.numero_radicado} - {self.tipo_radicado}"
