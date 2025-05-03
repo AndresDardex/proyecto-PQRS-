@@ -224,8 +224,8 @@
                         document.getElementById('successMessage').innerHTML = `
                             Tu registro ha sido exitoso.<br>
                             Tu número de PQRS es: <strong>#${data.numero_radicado}</strong><br>
-                            Usuario: ${document.getElementById('email').value}<br>
-                            Contraseña: <strong>Rz7U4;6_</strong>
+                            Usuario: ${document.getElementById('numero_documento').value}<br>
+                            Contraseña: <strong>${data.password ? data.password : 'Cambia tu contraseña al ingresar por primera vez'}</strong>
                         `;
                         successModal.style.display = 'flex';
 
