@@ -15,6 +15,8 @@ from django.db import transaction
 from django.db import models, IntegrityError
 from django.core.mail import send_mail
 from django.conf import settings
+from .utils import generar_contrasena_segura
+
 import uuid
 import csv
 
@@ -215,6 +217,11 @@ def registrar_cliente_pqrs(request):
                     cliente = Cliente.objects.get(numero_identificacion=numero_documento)
                     usuario_nuevo = False
                 except Cliente.DoesNotExist:
+                    # Generar y encriptar contraseña
+                    contrasena_plana = generar_contrasena_segura()
+                    print(contrasena_plana)
+                    usuario_nuevo = True
+                    contrasena_encriptada = make_password(contrasena_plana)
                     # Si no existe, crear nuevo cliente
                     cliente_data = {
                         'tipo_identificacion': request.POST.get('tipo_documento'),
@@ -222,7 +229,7 @@ def registrar_cliente_pqrs(request):
                         'nombre_completo': request.POST.get('nombre'),
                         'correo_electronico': email,
                         'telefono_movil': request.POST.get('telefono'),
-                        'contrasena': make_password("Rz7U4;6_"),  # Contraseña quemada encriptada
+                        'contrasena': contrasena_encriptada,
                     }
 
                     cliente = Cliente.objects.create(**cliente_data)
@@ -251,7 +258,7 @@ def registrar_cliente_pqrs(request):
                     'numero_radicado': pqrs.numero_radicado,
                     'usuario_nuevo': usuario_nuevo,
                     'email': cliente.correo_electronico,
-                    'password': 'Rz7U4;6_' if usuario_nuevo else None,
+                    'password': contrasena_plana if usuario_nuevo else None,
                     'message': 'PQRS registrada exitosamente' +
                                (' y nuevo usuario creado' if usuario_nuevo else '')
                 })
@@ -270,3 +277,5 @@ def registrar_cliente_pqrs(request):
 
     # GET request - mostrar formulario
     return render(request, 'registrar_cliente.html')
+
+

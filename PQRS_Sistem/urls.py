@@ -29,7 +29,13 @@ urlpatterns = [
     path('registrar-pqrs/', registrar_cliente_pqrs, name='registrar_cliente_pqrs'),
     path('verificar/<str:codigo>/', verificar_cuenta, name='verificar_cuenta'),
 
+
+
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Handlers de errores personalizados
+handler404 = 'core.views.error_404'
+handler500 = 'core.views.error_500'

@@ -1,0 +1,316 @@
+/* Variables de estilo consistentes */
+:root {
+    --primary-color: #4361ee;
+    --primary-hover: #3a56d4;
+    --secondary-color: #6c757d;
+    --secondary-hover: #5a6268;
+    --success-color: #28a745;
+    --success-hover: #218838;
+    --info-color: #17a2b8;
+    --info-hover: #138496;
+    --warning-color: #ffc107;
+    --warning-hover: #e0a800;
+    --danger-color: #dc3545;
+    --danger-hover: #bb2d3b;
+    --text-color: #2b2d42;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --gray-light: #e9ecef;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --border-radius: 8px;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.pqrs-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header */
+.pqrs-header {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 0.4rem 2rem;
+    box-shadow: var(--shadow);
+}
+
+.pqrs-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Contenido principal */
+.pqrs-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.user-welcome {
+    margin-bottom: 2rem;
+}
+
+.user-welcome h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-welcome p {
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+/* Listado de PQRS */
+.pqrs-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.pqrs-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.pqrs-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+}
+
+.pqrs-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: var(--light-bg);
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.pqrs-number {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.pqrs-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 50rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-en_proceso {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.badge-resuelto {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-cerrado {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.pqrs-card-body {
+    padding: 1.5rem;
+}
+
+.pqrs-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.info-item i {
+    color: var(--primary-color);
+    width: 20px;
+    text-align: center;
+}
+
+.pqrs-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-details {
+    background-color: var(--info-color);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-details:hover {
+    background-color: var(--info-hover);
+    transform: translateY(-2px);
+}
+
+/* Sin PQRS */
+.no-pqrs {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.no-pqrs i {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.no-pqrs p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+.btn-create {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-create:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* Botones de acción */
+.action-buttons {
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-back {
+    background-color: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn-back:hover {
+    background-color: var(--secondary-hover);
+    transform: translateY(-2px);
+}
+
+/* Footer */
+.pqrs-footer {
+    background-color: var(--text-color);
+    color: var(--white);
+    text-align: center;
+    /*padding: 1.5rem;*/
+    margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pqrs-content {
+        padding: 1.5rem;
+    }
+
+    .pqrs-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .pqrs-actions {
+        justify-content: flex-start;
+    }
+
+    .btn-details {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .pqrs-content {
+        padding: 1rem;
+    }
+
+    .pqrs-info {
+        grid-template-columns: 1fr;
+    }
+
+    .no-pqrs {
+        padding: 1.5rem;
+    }
+
+    .btn-create {
+        width: 100%;
+        justify-content: center;
+    }
+}
