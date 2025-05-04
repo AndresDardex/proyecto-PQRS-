@@ -13,23 +13,12 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.db import models, IntegrityError
-from django.core.mail import send_mail
-from django.conf import settings
-from .utils import generar_contrasena_segura
-
+from .utils import generar_contrasena_segura, enviar_correo_bienvenida
 import uuid
 import csv
 
-
-
 def home(request):
     return render(request, 'inicio.html')
-
-def enviar_correo_verificacion(correo_destino, codigo):
-    asunto = 'Verifica tu cuenta'
-    mensaje = f'Gracias por registrarte. Para activar tu cuenta, haz clic aquí:\n\nhttp://localhost:8000/verificar/{codigo}\n\nSi no te registraste, por favor ignora este mensaje.'
-    remitente = settings.EMAIL_HOST_USER  # Esto depende de tu configuración SMTP
-    send_mail(asunto, mensaje, remitente, [correo_destino])
 
 def verificar_cuenta(request, codigo):
     cliente = get_object_or_404(Cliente, codigo_verificacion=codigo)
@@ -196,14 +185,6 @@ def detalle_pqrs_gestor(request, numero_radicado):
     pqrs = get_object_or_404(PQRS, numero_radicado=numero_radicado)
     return render(request, 'detalle_pqrs_gestor.html', {'pqrs': pqrs})
 
-
-from django.db import transaction, models
-from django.contrib.auth.hashers import make_password
-from django.db.utils import IntegrityError
-from django.http import JsonResponse
-from .models import Cliente, PQRS
-
-
 def registrar_cliente_pqrs(request):
     if request.method == 'POST':
         try:
@@ -219,9 +200,10 @@ def registrar_cliente_pqrs(request):
                 except Cliente.DoesNotExist:
                     # Generar y encriptar contraseña
                     contrasena_plana = generar_contrasena_segura()
-                    print(contrasena_plana)
                     usuario_nuevo = True
                     contrasena_encriptada = make_password(contrasena_plana)
+                    # Generar código de verificación
+                    codigo_verificacion = str(uuid.uuid4())
                     # Si no existe, crear nuevo cliente
                     cliente_data = {
                         'tipo_identificacion': request.POST.get('tipo_documento'),
@@ -230,6 +212,8 @@ def registrar_cliente_pqrs(request):
                         'correo_electronico': email,
                         'telefono_movil': request.POST.get('telefono'),
                         'contrasena': contrasena_encriptada,
+                        'codigo_verificacion': codigo_verificacion,  # Guardamos el código
+                        'verificado': False
                     }
 
                     cliente = Cliente.objects.create(**cliente_data)
@@ -252,6 +236,16 @@ def registrar_cliente_pqrs(request):
                     request.session['usuario'] = cliente.nombre_completo
                     request.session['rol'] = 'cliente'
                     request.session['numero_id'] = cliente.numero_identificacion
+
+                    # Enviar correo con datos de acceso
+                enviar_correo_bienvenida(cliente.correo_electronico,
+                        cliente.nombre_completo,
+                        cliente.numero_identificacion,
+                        contrasena_plana,
+                        pqrs.numero_radicado,
+                        pqrs.tipo_radicado,
+                        cliente.codigo_verificacion  # Lo usas en el enlace
+                    )
 
                 return JsonResponse({
                     'success': True,
