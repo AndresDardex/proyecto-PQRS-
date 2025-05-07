@@ -72,24 +72,24 @@ class LoginForm(forms.Form):
     )
 
 class FiltroPQRSForm(forms.Form):
-    numero_radicado = forms.CharField(
-        required=False,
-        label='Número de Radicado',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Buscar por número de radicado'})
-    )
+    numero_radicado = forms.IntegerField(required=False, label='Número de Radicado')
     tipo_radicado = forms.ChoiceField(
+        choices=[('', 'Todos')] + list(PQRS.TIPO_RADICADO_CHOICES),
         required=False,
-        choices=[('', 'Todos')] + PQRS.TIPO_RADICADO_CHOICES,
-        label='Tipo de Radicado',
-        widget=forms.Select(attrs={'class': 'form-select'})
+        label='Tipo de Radicado'
+    )
+    estado = forms.ChoiceField(
+        choices=[('', 'Todos')] + list(PQRS.ESTADO_RADICADO_CHOICES),
+        required=False,
+        label='Estado'
     )
     fecha_inicio = forms.DateField(
         required=False,
         label='Desde',
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        widget=forms.DateInput(attrs={'type': 'date'})
     )
     fecha_fin = forms.DateField(
         required=False,
         label='Hasta',
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        widget=forms.DateInput(attrs={'type': 'date'})
     )

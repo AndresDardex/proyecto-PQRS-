@@ -34,6 +34,10 @@
                         {{ form.tipo_radicado }}
                     </div>
                     <div class="form-group">
+                        {{ form.estado.label_tag }}
+                        {{ form.estado }}
+                    </div>
+                    <div class="form-group">
                         {{ form.fecha_inicio.label_tag }}
                         {{ form.fecha_inicio }}
                     </div>
@@ -61,6 +65,7 @@
                             <th>Número Radicado</th>
                             <th>Fecha</th>
                             <th>Tipo</th>
+                            <th>Estado</th>
                             <th>Cliente</th>
                             <th>Comentarios</th>
                             <th>Acciones</th>
@@ -68,21 +73,30 @@
                     </thead>
                     <tbody>
                         {% for pqrs in pqrs_list %}
-                            <tr>
-                                <td data-label="Número Radicado">{{ pqrs.numero_radicado }}</td>
-                                <td data-label="Fecha">{{ pqrs.fecha_radicado|date:"Y-m-d H:i" }}</td>
-                                <td data-label="Tipo"><span class="badge badge-{{ pqrs.tipo_radicado|lower }}">{{ pqrs.tipo_radicado }}</span></td>
-                                <td data-label="Cliente">{{ pqrs.cliente.nombre_completo }}</td>
-                                <td data-label="Comentarios">{{ pqrs.comentarios|truncatechars:50 }}</td>
-                                <td data-label="Acciones">
-                                    <a href="{% url 'detalle_pqrs_gestor' pqrs.numero_radicado %}" class="btn-action btn-view">
-                                        <i class="fas fa-eye"></i> <span class="action-text">Detalles</span>
-                                    </a>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td data-label="Número Radicado">{{ pqrs.numero_radicado }}</td>
+                            <td data-label="Fecha">{{ pqrs.fecha_radicado|date:"Y-m-d H:i" }}</td>
+                            <td data-label="Tipo">
+                                <span class="badge badge-{{ pqrs.tipo_radicado|lower }}">
+                                    {{ pqrs.tipo_radicado }}
+                                </span>
+                            </td>
+                            <td data-label="Estado">
+                                <span class="status-badge badge-{{ pqrs.estado|lower|slugify }}">
+                                    {{ pqrs.estado }}
+                                </span>
+                            </td>
+                            <td data-label="Cliente">{{ pqrs.cliente.nombre_completo }}</td>
+                            <td data-label="Comentarios">{{ pqrs.comentarios|truncatechars:50 }}</td>
+                            <td data-label="Acciones">
+                                <a href="{% url 'detalle_pqrs_gestor' pqrs.numero_radicado %}" class="btn-action btn-view">
+                                    <i class="fas fa-eye"></i> <span class="action-text">Detalles</span>
+                                </a>
+                            </td>
+                        </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="no-results">
+                            <td colspan="7" class="no-results">
                                 <i class="fas fa-info-circle"></i> No se encontraron resultados.
                             </td>
                         </tr>

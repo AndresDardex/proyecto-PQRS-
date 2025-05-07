@@ -222,7 +222,7 @@ body {
 
 .pqrs-table {
     min-width: 100%;
-    /*table-layout: fixed; !* Mejor control del ancho de columnas *!*/
+    table-layout: fixed; /* Mejor control del ancho de columnas */
     border-collapse: separate;
     border-spacing: 0;
     background-color: var(--white);
@@ -240,13 +240,21 @@ body {
     text-align: left;
     font-weight: 600;
     border-bottom: 2px solid var(--primary-hover);
+    word-wrap: break-word; /* Permite que el texto largo se ajuste */
+    background-color: #4361ee;
+    color: white;
+    font-weight: 600;
 }
+
+.pqrs-table td:nth-child(7) { width: 12%; } /* Acciones */
+
 
 .pqrs-table td {
     padding: 1rem;
     border-bottom: 1px solid var(--gray-light);
     vertical-align: middle;
     transition: var(--transition);
+    word-wrap: break-word; /* Permite que el texto largo se ajuste */
 }
 
 .pqrs-table tbody tr {
@@ -301,8 +309,8 @@ body {
 /* Badges */
 .badge {
     display: inline-block;
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
     line-height: 1;
     text-align: center;
@@ -443,5 +451,62 @@ body {
 
     .btn-action i {
         margin: 0;
+    }
+}
+
+/* Badges de estado */
+.status-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 50rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    display: inline-block;
+    min-width: 100px; /* Asegura un ancho mínimo para todos los estados */
+}
+
+.badge-nuevo {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.badge-en-proceso {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-resuelto {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-cerrado {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Ajustes para la tabla en móviles */
+@media (max-width: 768px) {
+    .status-badge {
+        min-width: auto;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* Ajustes para responsive */
+@media (max-width: 768px) {
+    .pqrs-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .pqrs-table td {
+        white-space: normal; /* Permite múltiples líneas en móvil */
+    }
+
+    .pqrs-table td:nth-child(n) {
+        width: auto; /* Ancho automático en móvil */
     }
 }

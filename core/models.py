@@ -1,4 +1,3 @@
-# Create your models here.
 from django.db import models
 from django.core.exceptions import ValidationError
 
@@ -35,7 +34,7 @@ class Empleado(models.Model):
 
 class PQRS(models.Model):
     TIPO_RADICADO_CHOICES = [
-        ('Petición', 'Petición'),
+        ('Peticion', 'Peticion'),
         ('Queja', 'Queja'),
         ('Reclamo', 'Reclamo'),
         ('Sugerencia', 'Sugerencia'),

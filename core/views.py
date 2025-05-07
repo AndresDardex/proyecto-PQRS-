@@ -3,6 +3,7 @@ from django.contrib import messages
 from .forms import ClienteRegistroForm, LoginForm
 from .models import Cliente, Empleado, PQRS
 from .forms import ClienteRegistroForm
+from django.utils.dateparse import parse_datetime
 from .models import Cliente, Empleado
 from .forms import LoginForm
 from django.shortcuts import get_object_or_404
@@ -14,8 +15,11 @@ from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.db import models, IntegrityError
 from .utils import generar_contrasena_segura, enviar_correo_bienvenida
+from datetime import datetime
+from django.utils import timezone
 import uuid
 import csv
+import pytz
 
 def home(request):
     return render(request, 'inicio.html')
@@ -106,6 +110,7 @@ def crear_pqrs(request):
 def error_page(request):
     return render(request, 'error_pagina.html')
 
+
 def gestionar_pqrs(request):
     if request.session.get('rol') != 'gestor':
         return redirect('inicio')
@@ -114,21 +119,27 @@ def gestionar_pqrs(request):
     form = FiltroPQRSForm(request.GET or None)
 
     if form.is_valid():
-        numero_radicado = form.cleaned_data.get('numero_radicado')
-        tipo_radicado = form.cleaned_data.get('tipo_radicado')
-        fecha_inicio = form.cleaned_data.get('fecha_inicio')
-        fecha_fin = form.cleaned_data.get('fecha_fin')
+        filters = {}
 
-        if numero_radicado:
-            pqrs_queryset = pqrs_queryset.filter(numero_radicado=numero_radicado)
-        if tipo_radicado:
-            pqrs_queryset = pqrs_queryset.filter(tipo_radicado=tipo_radicado)
-        if fecha_inicio:
-            pqrs_queryset = pqrs_queryset.filter(fecha_radicado__gte=fecha_inicio)
-        if fecha_fin:
-            pqrs_queryset = pqrs_queryset.filter(fecha_radicado__lte=fecha_fin)
+        if form.cleaned_data['numero_radicado']:
+            filters['numero_radicado'] = form.cleaned_data['numero_radicado']
 
-    # Exportar a CSV
+        if form.cleaned_data['tipo_radicado']:
+            filters['tipo_radicado'] = form.cleaned_data['tipo_radicado']
+
+        if form.cleaned_data['estado']:
+            filters['estado'] = form.cleaned_data['estado']
+
+        if form.cleaned_data['fecha_inicio']:
+            fecha_inicio = datetime.combine(form.cleaned_data['fecha_inicio'], datetime.min.time())
+            filters['fecha_radicado__gte'] = fecha_inicio
+
+        if form.cleaned_data['fecha_fin']:
+            fecha_fin = datetime.combine(form.cleaned_data['fecha_fin'], datetime.max.time())
+            filters['fecha_radicado__lte'] = fecha_fin
+
+        pqrs_queryset = pqrs_queryset.filter(**filters)
+
     if 'exportar_csv' in request.GET:
         return exportar_pqrs_csv(pqrs_queryset)
 
@@ -138,20 +149,76 @@ def gestionar_pqrs(request):
         'form': form
     })
 
+
+def actualizar_pqrs(request, numero_radicado):
+    if request.method == 'POST' and request.session.get('rol') == 'gestor':
+        try:
+            pqrs = get_object_or_404(PQRS, numero_radicado=numero_radicado)
+
+            nuevo_estado = request.POST.get('estado')
+            nota_estado = request.POST.get('nota_estado', '').strip()
+            fecha_respuesta_str = request.POST.get('fecha_respuesta')
+
+            # Validaciones
+            if not nota_estado:
+                messages.error(request, 'Debe ingresar una nota para el cambio de estado')
+                return redirect('detalle_pqrs_gestor', numero_radicado=numero_radicado)
+
+            if not fecha_respuesta_str:
+                messages.error(request, 'Debe seleccionar una fecha de respuesta')
+                return redirect('detalle_pqrs_gestor', numero_radicado=numero_radicado)
+
+            # Convertir y validar fecha
+            fecha_respuesta_dt = parse_datetime(fecha_respuesta_str)
+            if not fecha_respuesta_dt:
+                messages.error(request, 'Formato de fecha inválido')
+                return redirect('detalle_pqrs_gestor', numero_radicado=numero_radicado)
+
+            # Validar que la fecha sea diferente a la última
+            if pqrs.fecha_respuesta and fecha_respuesta_dt == pqrs.fecha_respuesta:
+                messages.error(request, 'Debe modificar la fecha de respuesta para cambiar el estado')
+                return redirect('detalle_pqrs_gestor', numero_radicado=numero_radicado)
+
+            # Crear registro histórico
+            registro_historico = (
+                f"{fecha_respuesta_dt.strftime('%d/%m/%Y %H:%M:%S')} - "
+                f"Estado cambiado a {nuevo_estado}\n"
+                f"Nota: {nota_estado}\n"
+                "----------------------------------------\n"
+            )
+
+            # Actualizar campos
+            pqrs.estado = nuevo_estado
+            pqrs.fecha_respuesta = fecha_respuesta_dt
+            pqrs.justificacion_del_estado = (
+                    registro_historico +
+                    (pqrs.justificacion_del_estado if pqrs.justificacion_del_estado else '')
+            )
+
+            pqrs.save()
+
+            messages.success(request, 'Los cambios se han guardado correctamente')
+        except Exception as e:
+            messages.error(request, f'Error al actualizar: {str(e)}')
+
+    return redirect('detalle_pqrs_gestor', numero_radicado=numero_radicado)
+
+
 def exportar_pqrs_csv(queryset):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="reporte_pqrs.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Número Radicado', 'Fecha', 'Tipo', 'Comentarios', 'Cliente'])
+    writer.writerow(['Número Radicado', 'Fecha', 'Tipo', 'Estado', 'Cliente', 'Comentarios'])
 
     for pqrs in queryset:
         writer.writerow([
             pqrs.numero_radicado,
             pqrs.fecha_radicado.strftime("%Y-%m-%d %H:%M"),
             pqrs.tipo_radicado,
-            pqrs.comentarios,
-            pqrs.cliente.nombre_completo
+            pqrs.estado,
+            pqrs.cliente.nombre_completo,
+            pqrs.comentarios
         ])
 
     return response
@@ -181,9 +248,16 @@ def detalle_pqrs(request, numero_radicado):
 
     return render(request, 'detalle_pqrs.html', {'pqrs': pqrs, 'usuario': nombre_usuario})
 
+
 def detalle_pqrs_gestor(request, numero_radicado):
     pqrs = get_object_or_404(PQRS, numero_radicado=numero_radicado)
-    return render(request, 'detalle_pqrs_gestor.html', {'pqrs': pqrs})
+    estados = PQRS.ESTADO_RADICADO_CHOICES
+
+    return render(request, 'detalle_pqrs_gestor.html', {
+        'pqrs': pqrs,
+        'estados': estados,
+        'now': timezone.localtime(timezone.now())
+    })
 
 def registrar_cliente_pqrs(request):
     if request.method == 'POST':
