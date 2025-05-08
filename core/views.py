@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ClienteRegistroForm, LoginForm, FiltroPQRSFormCliente, FiltroPQRSForm
@@ -148,9 +149,14 @@ def gestionar_pqrs(request):
     if 'exportar_csv' in request.GET:
         return exportar_pqrs_csv(pqrs_queryset)
 
+    # Configuración de la paginación
+    paginator = Paginator(pqrs_queryset, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'gestion_pqrs.html', {
         'usuario': request.session.get('usuario'),
-        'pqrs_list': pqrs_queryset,
+        'page_obj': page_obj,
         'form': form
     })
 

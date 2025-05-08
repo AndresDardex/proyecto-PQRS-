@@ -59,7 +59,6 @@
                     </button>
                 </div>
             </form>
-
             <!-- Tabla de resultados -->
             <div class="pqrs-table-container">
                 <table class="pqrs-table">
@@ -75,7 +74,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for pqrs in pqrs_list %}
+                        {% for pqrs in page_obj %}
                         <tr>
                             <td data-label="Número Radicado">{{ pqrs.numero_radicado }}</td>
                             <td data-label="Fecha">{{ pqrs.fecha_radicado|date:"Y-m-d H:i" }}</td>
@@ -104,8 +103,26 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
 
+                <!-- Controles de paginación -->
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1{% if request.GET.numero_radicado %}&numero_radicado={{ request.GET.numero_radicado }}{% endif %}{% if request.GET.tipo_radicado %}&tipo_radicado={{ request.GET.tipo_radicado }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}" class="btn-pagination">&laquo; Primera</a>
+                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.numero_radicado %}&numero_radicado={{ request.GET.numero_radicado }}{% endif %}{% if request.GET.tipo_radicado %}&tipo_radicado={{ request.GET.tipo_radicado }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}" class="btn-pagination">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </span>
+
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.numero_radicado %}&numero_radicado={{ request.GET.numero_radicado }}{% endif %}{% if request.GET.tipo_radicado %}&tipo_radicado={{ request.GET.tipo_radicado }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}" class="btn-pagination">Siguiente</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.numero_radicado %}&numero_radicado={{ request.GET.numero_radicado }}{% endif %}{% if request.GET.tipo_radicado %}&tipo_radicado={{ request.GET.tipo_radicado }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.fecha_inicio %}&fecha_inicio={{ request.GET.fecha_inicio }}{% endif %}{% if request.GET.fecha_fin %}&fecha_fin={{ request.GET.fecha_fin }}{% endif %}" class="btn-pagination">Última &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
             <!-- Botones de acción -->
             <div class="action-buttons">
                 <a href="{% url 'vista_gestor' %}" class="btn btn-back">

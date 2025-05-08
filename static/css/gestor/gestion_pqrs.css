@@ -341,6 +341,54 @@ body {
     border-bottom: none;
 }
 
+/* -------------------- PAGINACIÓN -------------------- */
+
+/* Estilos para la paginación */
+.pagination {
+    margin: 25px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.step-links {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: #555;
+}
+
+.btn-pagination {
+    padding: 8px 15px;
+    background-color: var(--success-color);
+    border: none;
+    border-radius: 11px;
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    letter-spacing: 0.3px;
+}
+
+.btn-pagination:hover {
+    background-color: var(--success-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.current {
+    padding: 0 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+
 /* -------------------- ELEMENTOS EXTRA -------------------- */
 .action-item {
     margin-left: auto;
