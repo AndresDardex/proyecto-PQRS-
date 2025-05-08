@@ -371,21 +371,24 @@ body {
 
 /* Badges de estado */
 .status-badge {
-    padding: 0.5rem 1rem;
+    padding: 0.35rem 0.75rem;
     border-radius: 50rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    display: inline-block;
+    min-width: 100px; /* Asegura un ancho mínimo para todos los estados */
 }
 
-.badge-pendiente {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.badge-en_proceso {
+.badge-nuevo {
     background-color: #cce5ff;
     color: #004085;
+}
+
+.badge-en-proceso {
+    background-color: #fff3cd;
+    color: #856404;
 }
 
 .badge-resuelto {

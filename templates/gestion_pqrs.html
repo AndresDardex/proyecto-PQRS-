@@ -51,6 +51,9 @@
                     <button type="submit" class="btn btn-filter">
                         <i class="fas fa-filter"></i> Filtrar
                     </button>
+                    <a href="{% url 'gestion_pqrs' %}" class="btn btn-clear">
+                        <i class="fas fa-broom"></i> Limpiar
+                    </a>
                     <button type="submit" name="exportar_csv" value="1" class="btn btn-export">
                         <i class="fas fa-file-csv"></i> Exportar CSV
                     </button>
@@ -82,9 +85,7 @@
                                 </span>
                             </td>
                             <td data-label="Estado">
-                                <span class="status-badge badge-{{ pqrs.estado|lower|slugify }}">
-                                    {{ pqrs.estado }}
-                                </span>
+                                <span class="status-badge badge-{{ pqrs.estado|slugify }}">{{ pqrs.get_estado_display }}</span>
                             </td>
                             <td data-label="Cliente">{{ pqrs.cliente.nombre_completo }}</td>
                             <td data-label="Comentarios">{{ pqrs.comentarios|truncatechars:50 }}</td>

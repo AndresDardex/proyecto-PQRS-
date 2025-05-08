@@ -1,6 +1,7 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import ClienteRegistroForm, LoginForm
+from .forms import ClienteRegistroForm, LoginForm, FiltroPQRSFormCliente
 from .models import Cliente, Empleado, PQRS
 from .forms import ClienteRegistroForm
 from django.utils.dateparse import parse_datetime
@@ -234,9 +235,42 @@ def listar_pqrs_cliente(request):
 
     nombre_usuario = request.session.get('usuario')
     cliente = get_object_or_404(Cliente, nombre_completo=nombre_usuario)
-    pqrs = PQRS.objects.filter(cliente=cliente).order_by('-fecha_radicado')
+    pqrs_queryset = PQRS.objects.filter(cliente=cliente).order_by('-fecha_radicado')
 
-    return render(request, 'listar_pqrs.html', {'pqrs_list': pqrs, 'usuario': nombre_usuario})
+    form = FiltroPQRSFormCliente(request.GET or None)
+
+    if form.is_valid():
+        filters = {'cliente': cliente}
+
+        print("Datos del formulario:", form.cleaned_data)  # Debug
+
+        if form.cleaned_data['numero_radicado']:
+            filters['numero_radicado'] = form.cleaned_data['numero_radicado']
+
+        if form.cleaned_data['tipo_radicado']:
+            filters['tipo_radicado'] = form.cleaned_data['tipo_radicado']
+
+        if form.cleaned_data['estado']:
+            print(f"Filtrando por estado: {form.cleaned_data['estado']}")  # Debug
+            filters['estado'] = form.cleaned_data['estado']
+
+        if form.cleaned_data['fecha_inicio']:
+            fecha_inicio = datetime.combine(form.cleaned_data['fecha_inicio'], datetime.min.time())
+            filters['fecha_radicado__gte'] = fecha_inicio
+
+        if form.cleaned_data['fecha_fin']:
+            fecha_fin = datetime.combine(form.cleaned_data['fecha_fin'], datetime.max.time())
+            filters['fecha_radicado__lte'] = fecha_fin
+
+        print("Filtros aplicados:", filters)  # Debug
+        pqrs_queryset = pqrs_queryset.filter(**filters)
+        print("Resultados:", pqrs_queryset)  # Debug
+
+    return render(request, 'listar_pqrs.html', {
+        'pqrs_list': pqrs_queryset,
+        'usuario': nombre_usuario,
+        'form': form
+    })
 
 def detalle_pqrs(request, numero_radicado):
     if request.session.get('rol') != 'cliente':

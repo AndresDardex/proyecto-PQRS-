@@ -22,8 +22,13 @@
                     <i class="fas fa-file-alt"></i> Detalle de tu PQRS
                     <span class="radicado-number">#{{ pqrs.numero_radicado }}</span>
                 </h2>
-                <div class="status-badge badge-{{ pqrs.estado|lower }}">
-                    {{ pqrs.estado }}
+                <div class="status-badge 
+                    {% if pqrs.estado|slugify == 'en-proceso' or pqrs.estado|slugify == 'enproceso' %}badge-en-proceso
+                    {% elif pqrs.estado|slugify == 'nuevo' %}badge-nuevo
+                    {% elif pqrs.estado|slugify == 'resuelto' %}badge-resuelto
+                    {% elif pqrs.estado|slugify == 'cerrado' %}badge-cerrado
+                    {% endif %}">
+                    Estado: {{ pqrs.estado|title }}
                 </div>
             </div>
 
@@ -39,10 +44,10 @@
                             <span class="detail-label">Fecha:</span>
                             <span class="detail-value">{{ pqrs.fecha_radicado|date:"d/m/Y H:i" }}</span>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Estado:</span>
-                            <span class="detail-value">{{ pqrs.estado }}</span>
-                        </div>
+{#                        <div class="detail-item">#}
+{#                            <span class="detail-label">Estado:</span>#}
+{#                            <span class="detail-value">{{ pqrs.estado }}</span>#}
+{#                        </div>#}
                     </div>
                 </div>
 
@@ -68,20 +73,16 @@
                     {% endif %}
                 </div>
 
-                <!-- Sección de Respuesta (si existe) -->
-                {% if pqrs.respuesta %}
-                <div class="detail-section response-section">
-                    <h3 class="section-title"><i class="fas fa-reply"></i> Respuesta del Administrador</h3>
-                    <div class="response-box">
-                        <div class="response-header">
-                            <span class="response-date">{{ pqrs.fecha_respuesta|date:"d/m/Y H:i" }}</span>
-                        </div>
-                        <div class="response-content">
-                            {{ pqrs.respuesta|linebreaks }}
-                        </div>
+                <div class="detail-section">
+                       <h3 class="section-title"><i class="fas fa-history"></i> Histórico de tu solicitud</h3>
+                        <div class="history-box">
+                            {% if pqrs.justificacion_del_estado %}
+                                <pre>{{ pqrs.justificacion_del_estado }}</pre>
+                            {% else %}
+                                <p class="no-history"><i class="fas fa-info-circle"></i> No hay registro de cambios de estado.</p>
+                              {% endif %}
                     </div>
                 </div>
-                {% endif %}
             </div>
 
             <div class="action-buttons">

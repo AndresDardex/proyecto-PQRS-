@@ -64,8 +64,8 @@
                             <div class="detail-item">
                                 <span class="detail-label">Fecha Respuesta:</span>
                                 <div class="editable-date-container">
-                                    <input type="datetime-local" name="fecha_respuesta" 
-                                           value="{{ pqrs.fecha_respuesta|date:'Y-m-d\TH:i' }}" 
+                                    <input type="datetime-local" name="fecha_respuesta"
+                                           value="{{ pqrs.fecha_respuesta|date:'Y-m-d\TH:i' }}"
                                            class="date-input" id="fecha-respuesta"
                                            data-ultima-fecha="{{ pqrs.fecha_respuesta|date:'Y-m-d\TH:i' }}"
                                            required>
@@ -100,7 +100,7 @@
                                 <label for="nota_estado" class="form-label">
                                     <i class="fas fa-sticky-note"></i> Nota del Cambio (Obligatoria)
                                 </label>
-                                <textarea name="nota_estado" id="nota_estado" class="form-control" 
+                                <textarea name="nota_estado" id="nota_estado" class="form-control"
                                           rows="3" required placeholder="Ingrese la justificación para el cambio de estado"></textarea>
                             </div>
                             <button type="submit" class="btn btn-update">

@@ -93,3 +93,47 @@ class FiltroPQRSForm(forms.Form):
         label='Hasta',
         widget=forms.DateInput(attrs={'type': 'date'})
     )
+
+
+class FiltroPQRSFormCliente(forms.Form):
+    numero_radicado = forms.IntegerField(
+        label="Número de Radicado",
+        required=False,
+        widget=forms.NumberInput(attrs={'placeholder': 'Buscar por número'})
+    )
+
+    tipo_radicado = forms.ChoiceField(
+        label="Tipo de PQRS",
+        choices=PQRS.TIPO_RADICADO_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    estado = forms.ChoiceField(
+        label="Estado",
+        choices=PQRS.ESTADO_RADICADO_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    fecha_inicio = forms.DateField(
+        label="Desde",
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+
+    fecha_fin = forms.DateField(
+        label="Hasta",
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
+
+        if fecha_inicio and fecha_fin and fecha_inicio > fecha_fin:
+            raise forms.ValidationError("La fecha de inicio no puede ser mayor a la fecha fin")
+
+        return cleaned_data
