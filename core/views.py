@@ -1,26 +1,22 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import ClienteRegistroForm, LoginForm, FiltroPQRSFormCliente
-from .models import Cliente, Empleado, PQRS
-from .forms import ClienteRegistroForm
+from .forms import ClienteRegistroForm, LoginForm, FiltroPQRSFormCliente, FiltroPQRSForm
 from django.utils.dateparse import parse_datetime
-from .models import Cliente, Empleado
+from .models import Cliente, Empleado, PQRS
 from .forms import LoginForm
 from django.shortcuts import get_object_or_404
-from .models import PQRS
-from .forms import FiltroPQRSForm
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
-from django.db import transaction
-from django.db import models, IntegrityError
+from django.db import transaction, IntegrityError
 from .utils import generar_contrasena_segura, enviar_correo_bienvenida
 from datetime import datetime
 from django.utils import timezone
 import uuid
 import csv
 import pytz
+import random
 
 def home(request):
     return render(request, 'inicio.html')
@@ -90,21 +86,29 @@ def crear_pqrs(request):
         comentarios = request.POST.get('comentarios')
         anexo = request.FILES.get('anexo')
 
-        # Crear PQRS
-        PQRS.objects.create(
+        empleados = Empleado.objects.all()
+        if empleados.exists():
+            empleado_asignado = random.choice(empleados)
+        else:
+            empleado_asignado = None
+
+        nueva_pqrs = PQRS.objects.create(
             tipo_radicado=tipo,
             comentarios=comentarios,
             anexo=anexo,
-            cliente=cliente
+            cliente=cliente,
+            empleado_asignado=empleado_asignado
         )
 
-        # Redirigir con bandera para mostrar modal
-        return redirect('/crear-pqrs/?registro_exitoso=1')
+        return redirect(f'/crear-pqrs/?registro_exitoso=1&radicado={nueva_pqrs.numero_radicado}')
 
     registro_exitoso = request.GET.get('registro_exitoso') == '1'
+    numero_radicado = request.GET.get('radicado')
+
     return render(request, 'crear-pqrs.html', {
         'usuario': cliente.nombre_completo,
-        'registro_exitoso': registro_exitoso
+        'registro_exitoso': registro_exitoso,
+        'numero_radicado': numero_radicado
     })
 
 
