@@ -10,45 +10,105 @@
 </head>
 <body>
     <div class="pqrs-container">
-        <!-- Header con título del sistema -->
         <header class="pqrs-header">
             <h1><i class="fas fa-tasks"></i> Supermarket - Sistema PQRS</h1>
         </header>
 
-        <!-- Contenido principal -->
         <main class="pqrs-content">
             <div class="user-welcome">
                 <h2><i class="fas fa-file-alt"></i> Mis PQRS Registradas</h2>
-                <p>Aquí puedes ver el listado de todas tus solicitudes y su estado actual</p>
+                <p>Aquí puedes ver y filtrar todas tus solicitudes</p>
             </div>
+
+            <!-- Formulario de filtrado -->
+            <form method="get" class="filter-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="id_numero_radicado">Número de Radicado:</label>
+                        <input type="number" name="numero_radicado" id="id_numero_radicado"
+                               placeholder="Ej: 1001" value="{{ form.numero_radicado.value|default_if_none:'' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_tipo_radicado">Tipo de PQRS:</label>
+                        <select name="tipo_radicado" id="id_tipo_radicado">
+                            <option value="">Todos</option>
+                            {% for value, label in form.tipo_radicado.field.choices %}
+                                <option value="{{ value }}" {% if form.tipo_radicado.value == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_estado">Estado:</label>
+                            <select name="estado" id="id_estado">
+                                <option value="">Todos</option>
+                                {% for value, label in form.estado.field.choices %}
+                                    <option value="{{ value }}"
+                                            {% if form.estado.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_fecha_inicio">Desde:</label>
+                        <input type="date" name="fecha_inicio" id="id_fecha_inicio"
+                               value="{{ form.fecha_inicio.value|default_if_none:'' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_fecha_fin">Hasta:</label>
+                        <input type="date" name="fecha_fin" id="id_fecha_fin"
+                               value="{{ form.fecha_fin.value|default_if_none:'' }}">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-filter">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <a href="{% url 'listar_pqrs' %}" class="btn btn-clear">
+                        <i class="fas fa-broom"></i> Limpiar
+                    </a>
+                </div>
+            </form>
 
             {% if pqrs_list %}
             <div class="pqrs-list-container">
                 {% for pqrs in pqrs_list %}
-                <div class="pqrs-card">
+                <div class="pqrs-card wide-card">
                     <div class="pqrs-card-header">
                         <span class="pqrs-number">#{{ pqrs.numero_radicado }}</span>
-                        <span class="pqrs-badge badge-{{ pqrs.estado|lower }}">{{ pqrs.estado }}</span>
+                        <span class="status-badge badge-{{ pqrs.estado|slugify }}">{{ pqrs.get_estado_display }}</span>
                     </div>
 
-                    <div class="pqrs-card-body">
-                        <div class="pqrs-info">
-                            <div class="info-item">
-                                <i class="fas fa-tag"></i>
-                                <span>Tipo: {{ pqrs.tipo_radicado }}</span>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>Fecha: {{ pqrs.fecha_radicado|date:"d/m/Y H:i" }}</span>
-                            </div>
-                            <div class="pqrs-actions">
+                    <div class="pqrs-card-body horizontal-layout">
+                        <div class="info-item">
+                            <i class="fas fa-tag"></i>
+                            <span>{{ pqrs.get_tipo_radicado_display }}</span>
+                        </div>
+
+                        <div class="info-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>{{ pqrs.fecha_radicado|date:"d/m/Y H:i" }}</span>
+                        </div>
+
+                        {% if pqrs.empleado_asignado %}
+                        <div class="info-item">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Gestor/a: {{ pqrs.empleado_asignado.nombre }} {{ pqrs.empleado_asignado.apellido }}</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="info-item action-item">
                             <a href="{% url 'detalle_pqrs' pqrs.numero_radicado %}" class="btn-details">
                                 <i class="fas fa-eye"></i> Ver detalles
                             </a>
-                            </div>
                         </div>
-
-
                     </div>
                 </div>
                 {% endfor %}
@@ -56,21 +116,23 @@
             {% else %}
             <div class="no-pqrs">
                 <i class="fas fa-info-circle"></i>
-                <p>No tienes PQRS registradas aún.</p>
+                <p>No se encontraron PQRS con los filtros aplicados.</p>
                 <a href="{% url 'crear_pqrs' %}" class="btn-create">
-                    <i class="fas fa-plus-circle"></i> Crear mi primera PQRS
+                    <i class="fas fa-plus-circle"></i> Crear nueva PQRS
                 </a>
             </div>
             {% endif %}
 
             <div class="action-buttons">
                 <a href="{% url 'vista_cliente' %}" class="btn btn-back">
-                    <i class="fas fa-arrow-left"></i> Volver al inicio
+                    <i class="fas fa-arrow-left"></i> Volver al panel
+                </a>
+                <a href="{% url 'cerrar_sesion' %}" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
                 </a>
             </div>
         </main>
 
-        <!-- Footer -->
         <footer class="pqrs-footer">
             <p>&copy; 2025 Supermarket - Sistema PQRS. Todos los derechos reservados.</p>
         </footer>

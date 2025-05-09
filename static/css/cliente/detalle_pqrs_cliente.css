@@ -1,9 +1,12 @@
 /* Variables de estilo consistentes */
 :root {
+    /* Colores principales */
     --primary-color: #4361ee;
     --primary-hover: #3a56d4;
     --secondary-color: #6c757d;
     --secondary-hover: #5a6268;
+
+    /* Colores de estado */
     --success-color: #28a745;
     --success-hover: #218838;
     --info-color: #17a2b8;
@@ -12,16 +15,20 @@
     --warning-hover: #e0a800;
     --danger-color: #dc3545;
     --danger-hover: #bb2d3b;
+
+    /* Colores de texto y fondo */
     --text-color: #2b2d42;
     --light-bg: #f8f9fa;
     --white: #ffffff;
     --gray-light: #e9ecef;
+
+    /* Efectos */
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
     --border-radius: 8px;
 }
 
-/* Estilos generales */
+/* ============ ESTILOS GENERALES ============ */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--light-bg);
@@ -31,13 +38,23 @@ body {
     line-height: 1.6;
 }
 
+/* ============ ESTRUCTURA PRINCIPAL ============ */
 .pqrs-detail-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* Header */
+.pqrs-detail-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ============ HEADER ============ */
 .pqrs-header {
     background-color: var(--primary-color);
     color: var(--white);
@@ -54,16 +71,7 @@ body {
     gap: 10px;
 }
 
-/* Contenido principal */
-.pqrs-detail-content {
-    flex: 1;
-    padding: 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-}
-
+/* ============ DETALLE DE PQRS ============ */
 .detail-header {
     display: flex;
     justify-content: space-between;
@@ -142,7 +150,7 @@ body {
     border-left: 3px solid var(--primary-color);
 }
 
-/* Comentarios */
+/* ============ SECCIÓN DE COMENTARIOS ============ */
 .comments-box {
     background-color: var(--light-bg);
     padding: 1.5rem;
@@ -151,7 +159,7 @@ body {
     white-space: pre-line;
 }
 
-/* Documentos adjuntos */
+/* ============ DOCUMENTOS ADJUNTOS ============ */
 .attachment-box {
     display: flex;
     align-items: center;
@@ -175,24 +183,6 @@ body {
     white-space: nowrap;
 }
 
-.btn-download {
-    background-color: var(--success-color);
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius);
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-}
-
-.btn-download:hover {
-    background-color: var(--success-hover);
-    transform: translateY(-2px);
-}
-
 .no-attachment {
     color: var(--secondary-color);
     display: flex;
@@ -201,36 +191,7 @@ body {
     font-style: italic;
 }
 
-/* Badges de estado */
-.status-badge {
-    padding: 0.5rem 1rem;
-    border-radius: 50rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.badge-pendiente {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.badge-en_proceso {
-    background-color: #cce5ff;
-    color: #004085;
-}
-
-.badge-resuelto {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.badge-cerrado {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* Sección de respuesta */
+/* ============ SECCIÓN DE RESPUESTA ============ */
 .response-section {
     background-color: #f0f8ff;
     border-radius: var(--border-radius);
@@ -262,13 +223,7 @@ body {
     white-space: pre-line;
 }
 
-/* Botones de acción */
-.action-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
+/* ============ BOTONES ============ */
 .btn {
     padding: 0.75rem 1.5rem;
     border-radius: var(--border-radius);
@@ -282,6 +237,16 @@ body {
     justify-content: center;
     gap: 0.5rem;
     text-decoration: none;
+}
+
+.btn-download {
+    background-color: var(--success-color);
+    color: var(--white);
+}
+
+.btn-download:hover {
+    background-color: var(--success-hover);
+    transform: translateY(-2px);
 }
 
 .btn-back {
@@ -304,16 +269,55 @@ body {
     transform: translateY(-2px);
 }
 
-/* Footer */
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* ============ BADGES DE ESTADO ============ */
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 50rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Badge para estado "nuevo" - múltiples variantes */
+.badge-nuevo,
+[class*="nuevo"] {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+}
+
+.badge-en-proceso,
+.badge-enproceso,
+[class*="en-proceso"],
+[class*="enproceso"] {
+    background-color: #cce5ff !important;
+    color: #004085 !important;
+}
+
+.badge-resuelto {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-cerrado {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* ============ FOOTER ============ */
 .pqrs-footer {
     background-color: var(--text-color);
     color: var(--white);
     text-align: center;
-    /*padding: 1.5rem;*/
     margin-top: auto;
 }
 
-/* Responsive */
+/* ============ MEDIA QUERIES ============ */
 @media (max-width: 768px) {
     .pqrs-detail-content {
         padding: 1.5rem;

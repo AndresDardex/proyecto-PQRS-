@@ -1,4 +1,3 @@
-# Create your models here.
 from django.db import models
 from django.core.exceptions import ValidationError
 
@@ -35,17 +34,17 @@ class Empleado(models.Model):
 
 class PQRS(models.Model):
     TIPO_RADICADO_CHOICES = [
-        ('Petición', 'Petición'),
+        ('Peticion', 'Peticion'),
         ('Queja', 'Queja'),
         ('Reclamo', 'Reclamo'),
         ('Sugerencia', 'Sugerencia'),
     ]
     
     ESTADO_RADICADO_CHOICES = [
-        ('Nuevo', 'Nuevo'),
-        ('En Proceso', 'En Proceso'),
-        ('Resuelto', 'Resuelto'),
-        ('Cerrado', 'Cerrado'),
+        ('nuevo', 'Nuevo'),
+        ('en-proceso', 'En Proceso'),
+        ('resuelto', 'Resuelto'),
+        ('cerrado', 'Cerrado'),
     ]
 
     numero_radicado = models.AutoField(primary_key=True)
@@ -54,7 +53,7 @@ class PQRS(models.Model):
     comentarios = models.TextField()
     anexo = models.FileField(upload_to='anexos/', blank=True, null=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='pqrs')
-    estado = models.CharField(max_length=20, choices=ESTADO_RADICADO_CHOICES, default='En Proceso')
+    estado = models.CharField(max_length=20, choices=ESTADO_RADICADO_CHOICES, default='nuevo')
     empleado_asignado = models.ForeignKey(Empleado, on_delete=models.SET_NULL, null=True, blank=True, related_name='pqrs_asignados')
     justificacion_del_estado = models.TextField(blank=True, null=True)
     fecha_respuesta = models.DateTimeField(blank=True, null=True)
