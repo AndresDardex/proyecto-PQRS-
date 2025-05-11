@@ -137,3 +137,8 @@ class FiltroPQRSFormCliente(forms.Form):
             raise forms.ValidationError("La fecha de inicio no puede ser mayor a la fecha fin")
 
         return cleaned_data
+
+class CambioContrasenaForm(forms.Form):
+    contrasena_actual = forms.CharField(widget=forms.PasswordInput, label="Contraseña Actual")
+    nueva_contrasena = forms.CharField(widget=forms.PasswordInput, label="Nueva Contraseña")
+    confirmar_contrasena = forms.CharField(widget=forms.PasswordInput, label="Confirmar Nueva Contraseña")

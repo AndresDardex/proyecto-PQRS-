@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages import success
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ClienteRegistroForm, LoginForm, FiltroPQRSFormCliente, FiltroPQRSForm
 from django.utils.dateparse import parse_datetime
 from .models import Cliente, Empleado, PQRS
-from .forms import LoginForm
+from .forms import LoginForm, CambioContrasenaForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -18,6 +19,7 @@ import uuid
 import csv
 import pytz
 import random
+import re
 
 def home(request):
     return render(request, 'inicio.html')
@@ -390,4 +392,51 @@ def registrar_cliente_pqrs(request):
     # GET request - mostrar formulario
     return render(request, 'registrar_cliente.html')
 
+def validar_contrasena_segura(password):
+    if (len(password) < 8 or
+        not re.search(r'[A-Z]', password) or
+        not re.search(r'[a-z]', password) or
+        not re.search(r'[0-9]', password) or
+        not re.search(r'[@$!%*?&#._-]', password)):
+        return False
+    return True
 
+#@login_required()
+def cambiar_contrasena(request):
+    numero_id = request.session.get('numero_id')
+    if not numero_id:
+        return redirect('cambiar_contrasena')
+
+    cliente = get_object_or_404(Cliente, numero_identificacion=numero_id)
+
+    success = None
+    error = None
+
+    if request.method == 'POST':
+        form = CambioContrasenaForm(request.POST)
+        if form.is_valid():
+            actual = form.cleaned_data['contrasena_actual']
+            nueva = form.cleaned_data['nueva_contrasena']
+            confirmar = form.cleaned_data['confirmar_contrasena']
+
+            if not check_password(actual, cliente.contrasena):
+                error = "La contraseña actual es incorrecta."
+            elif nueva != confirmar:
+                error = "Las nuevas contraseñas no coinciden."
+            elif not validar_contrasena_segura(nueva):
+                error = "La nueva contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial."
+            else:
+                cliente.contrasena = make_password(nueva)
+                cliente.save()
+                success = "La contraseña se actualizó correctamente."
+                form = CambioContrasenaForm()
+
+    else:
+        form = CambioContrasenaForm()
+
+    return render(request, 'cambiar_contrasena.html', {
+        'form': form,
+        'usuario': cliente.nombre_completo,
+        'success': success,
+        'error': error
+    })
