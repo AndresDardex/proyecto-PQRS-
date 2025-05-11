@@ -17,6 +17,7 @@ class Cliente(models.Model):
     contrasena = models.CharField(max_length=100)
     verificado = models.BooleanField(default=False)
     codigo_verificacion = models.CharField(max_length=64, blank=True, null=True)
+    token_recuperacion = models.CharField(max_length=128, blank=True, null=True)
 
 
     def __str__(self):
