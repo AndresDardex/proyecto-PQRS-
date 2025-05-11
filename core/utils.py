@@ -2,6 +2,11 @@ import random
 import string
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
+from django.utils import timezone
+import hashlib
+import datetime
+
 
 def generar_contrasena_segura(longitud=8):
     if longitud < 4:
@@ -53,3 +58,35 @@ Equipo de PQRS
     '''
     remitente = settings.EMAIL_HOST_USER
     send_mail(asunto, mensaje, remitente, [email])
+
+
+def generar_token_personalizado(cliente):
+    now = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
+    data = f"{cliente.pk}{cliente.correo_electronico}{now}"
+    return hashlib.sha256(data.encode()).hexdigest()
+
+
+def enviar_correo_recuperacion(cliente, request):
+    token = generar_token_personalizado(cliente)
+    cliente.token_recuperacion = token
+    cliente.save()
+
+    url = request.build_absolute_uri(reverse('restablecer_contrasena', args=[token]))
+
+    asunto = 'Recuperación de contraseña'
+    mensaje = f"""Hola {cliente.nombre_completo},
+
+Haz clic en el siguiente enlace para restablecer tu contraseña:
+
+{url}
+
+Si tú no solicitaste este cambio, puedes ignorar este mensaje.
+"""
+
+    send_mail(
+        asunto,
+        mensaje,
+        settings.DEFAULT_FROM_EMAIL,
+        [cliente.correo_electronico],
+        fail_silently=False,
+    )

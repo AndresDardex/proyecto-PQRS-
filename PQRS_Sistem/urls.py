@@ -5,7 +5,8 @@ from core.views import (
     login_personalizado, vista_cliente,
     vista_gestor, cerrar_sesion, listar_pqrs_cliente, detalle_pqrs,
     gestionar_pqrs, detalle_pqrs_gestor, error_page, crear_pqrs,
-    registrar_cliente_pqrs, verificar_cuenta, actualizar_pqrs, cambiar_contrasena
+    registrar_cliente_pqrs, verificar_cuenta, actualizar_pqrs,
+    cambiar_contrasena, solicitar_recuperacion, restablecer_contrasena,
 )
 
 from django.views.generic import TemplateView
@@ -30,6 +31,9 @@ urlpatterns = [
     path('verificar/<str:codigo>/', verificar_cuenta, name='verificar_cuenta'),
     path('gestor/pqrs/<int:numero_radicado>/actualizar/', actualizar_pqrs, name='actualizar_pqrs'),
     path('cambiar-contrasena/', cambiar_contrasena, name='cambiar_contrasena'),
+    path('recuperar-contrasena/', solicitar_recuperacion, name='recuperar_contrasena'),
+    path('restablecer-contrasena/<str:token>/', restablecer_contrasena, name='restablecer_contrasena'),
+
 
 ]
 

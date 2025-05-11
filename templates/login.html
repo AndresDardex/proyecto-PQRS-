@@ -24,6 +24,9 @@ Iniciar Sesión | Supermarket PQRS
             <div class="form-group">
                 <label for="id_contrasena">Contraseña</label>
                 {{ form.contrasena }}
+                <div class="text-end mt-1">
+                    <a href="{% url 'recuperar_contrasena' %}" class="forgot-password">¿Olvidó su contraseña?</a>
+                </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button type="submit" class="btn">Ingresar</button>

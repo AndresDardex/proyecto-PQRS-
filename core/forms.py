@@ -142,3 +142,42 @@ class CambioContrasenaForm(forms.Form):
     contrasena_actual = forms.CharField(widget=forms.PasswordInput, label="Contraseña Actual")
     nueva_contrasena = forms.CharField(widget=forms.PasswordInput, label="Nueva Contraseña")
     confirmar_contrasena = forms.CharField(widget=forms.PasswordInput, label="Confirmar Nueva Contraseña")
+
+class RecuperarContrasenaForm(forms.Form):
+    correo = forms.EmailField(label="Correo electrónico", required=True)
+
+
+class RestablecerContrasenaForm(forms.Form):
+    nueva_contrasena = forms.CharField(
+        widget=forms.PasswordInput,
+        label="Nueva contraseña"
+    )
+    confirmar_contrasena = forms.CharField(
+        widget=forms.PasswordInput,
+        label="Confirmar contraseña"
+    )
+
+    def clean_nueva_contrasena(self):
+        password = self.cleaned_data.get('nueva_contrasena')
+
+        # Validaciones de seguridad
+        if len(password) < 8:
+            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
+        if not re.search(r"[A-Z]", password):
+            raise forms.ValidationError("Debe contener al menos una letra mayúscula.")
+        if not re.search(r"[a-z]", password):
+            raise forms.ValidationError("Debe contener al menos una letra minúscula.")
+        if not re.search(r"[0-9]", password):
+            raise forms.ValidationError("Debe contener al menos un número.")
+        if not re.search(r'[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]', password):
+            raise forms.ValidationError("Debe contener al menos un carácter especial.")
+
+        return password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("nueva_contrasena")
+        password2 = cleaned_data.get("confirmar_contrasena")
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Las contraseñas no coinciden.")

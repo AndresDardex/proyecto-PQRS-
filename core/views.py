@@ -3,18 +3,19 @@ from django.contrib.messages import success
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import ClienteRegistroForm, LoginForm, FiltroPQRSFormCliente, FiltroPQRSForm
+from .forms import ClienteRegistroForm, LoginForm, FiltroPQRSFormCliente, FiltroPQRSForm, RecuperarContrasenaForm
 from django.utils.dateparse import parse_datetime
 from .models import Cliente, Empleado, PQRS
-from .forms import LoginForm, CambioContrasenaForm
+from .forms import LoginForm, CambioContrasenaForm, RecuperarContrasenaForm, RestablecerContrasenaForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from django.db import transaction, IntegrityError
-from .utils import generar_contrasena_segura, enviar_correo_bienvenida
+from .utils import generar_contrasena_segura, enviar_correo_bienvenida, enviar_correo_recuperacion
 from datetime import datetime
 from django.utils import timezone
+<<<<<<< Updated upstream
 from io import BytesIO
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib.units import inch
@@ -22,6 +23,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+=======
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+>>>>>>> Stashed changes
 import uuid
 import csv
 import pytz
@@ -491,7 +497,6 @@ def validar_contrasena_segura(password):
         return False
     return True
 
-#@login_required()
 def cambiar_contrasena(request):
     numero_id = request.session.get('numero_id')
     if not numero_id:
@@ -530,3 +535,65 @@ def cambiar_contrasena(request):
         'success': success,
         'error': error
     })
+
+def solicitar_recuperacion(request):
+    success = None
+    error = None
+
+    if request.method == 'POST':
+        form = RecuperarContrasenaForm(request.POST)
+        if form.is_valid():
+            correo = form.cleaned_data['correo']
+            try:
+                cliente = Cliente.objects.get(correo_electronico=correo)
+                enviar_correo_recuperacion(cliente, request)
+                success = 'Te hemos enviado un correo con instrucciones para recuperar tu contraseña.'
+            except Cliente.DoesNotExist:
+                error = 'El correo no está registrado.'
+    else:
+        form = RecuperarContrasenaForm()
+
+    return render(request, 'recuperar_contrasena.html', {
+        'form': form,
+        'success': success,
+        'error': error
+    })
+
+def restablecer_contrasena(request, token):
+    success = None
+    error = None
+
+    try:
+        cliente = Cliente.objects.get(token_recuperacion=token)
+    except Cliente.DoesNotExist:
+        cliente = None
+
+    if cliente is not None:
+        if request.method == 'POST':
+            form = RestablecerContrasenaForm(request.POST)
+            if form.is_valid():
+                nueva_contrasena = form.cleaned_data['nueva_contrasena']
+                cliente.contrasena = make_password(nueva_contrasena)
+                cliente.token_recuperacion = None  # Eliminar token después de usarlo
+                cliente.save()
+                success = 'Tu contraseña ha sido restablecida exitosamente.'
+                return render(request, 'restablecer_contrasena.html', {
+                    'form': form,
+                    'success': success,
+                })
+        else:
+            form = RestablecerContrasenaForm()
+        return render(request, 'restablecer_contrasena.html', {
+            'form': form,
+            'error': error,
+            'success': success
+        })
+    else:
+        form = RestablecerContrasenaForm()
+        error = 'El enlace de restablecimiento no es válido o ha expirado.'
+        return render(request, 'restablecer_contrasena.html', {
+            'form': form,
+            'error': error,
+            'success': success
+        })
+
