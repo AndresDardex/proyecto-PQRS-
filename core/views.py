@@ -15,7 +15,7 @@ from django.db import transaction, IntegrityError
 from .utils import generar_contrasena_segura, enviar_correo_bienvenida, enviar_correo_recuperacion
 from datetime import datetime
 from django.utils import timezone
-<<<<<<< Updated upstream
+
 from io import BytesIO
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib.units import inch
@@ -23,11 +23,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-=======
+
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
->>>>>>> Stashed changes
+
 import uuid
 import csv
 import pytz
