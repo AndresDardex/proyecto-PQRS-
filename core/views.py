@@ -15,6 +15,13 @@ from django.db import transaction, IntegrityError
 from .utils import generar_contrasena_segura, enviar_correo_bienvenida
 from datetime import datetime
 from django.utils import timezone
+from io import BytesIO
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 import uuid
 import csv
 import pytz
@@ -148,8 +155,8 @@ def gestionar_pqrs(request):
 
         pqrs_queryset = pqrs_queryset.filter(**filters)
 
-    if 'exportar_csv' in request.GET:
-        return exportar_pqrs_csv(pqrs_queryset)
+    if 'exportar_pdf' in request.GET:
+        return exportar_pqrs_pdf(pqrs_queryset)
 
     # Configuración de la paginación
     paginator = Paginator(pqrs_queryset, 6)
@@ -161,6 +168,89 @@ def gestionar_pqrs(request):
         'page_obj': page_obj,
         'form': form
     })
+
+
+def exportar_pqrs_pdf(queryset):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte_pqrs.pdf"'
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter))
+    elements = []
+
+    styles = getSampleStyleSheet()
+    style_normal = styles['Normal']
+    style_normal.fontSize = 8
+    style_normal.leading = 10
+
+    # Título del reporte
+    title = Paragraph("<b>Reporte de PQRS - Supermarket</b>", styles['Title'])
+    elements.append(title)
+    elements.append(Spacer(1, 12))  # Espacio
+
+    # Configuración de la tabla principal
+    data = [
+        [
+            Paragraph('<b>N° Radicado</b>', style_normal),
+            Paragraph('<b>Fecha Radicado</b>', style_normal),
+            Paragraph('<b>Tipo</b>', style_normal),
+            Paragraph('<b>Estado</b>', style_normal),
+            Paragraph('<b>Cliente</b>', style_normal),
+            Paragraph('<b>Comentarios</b>', style_normal),
+            Paragraph('<b>Fecha Respuesta</b>', style_normal)
+        ]
+    ]
+
+    for pqrs in queryset:
+        fecha_respuesta = pqrs.fecha_respuesta.strftime("%Y-%m-%d %H:%M") if pqrs.fecha_respuesta else "No asignada"
+
+        nombre_cliente = pqrs.cliente.nombre_completo
+        if len(nombre_cliente) > 25:
+            partes = nombre_cliente.split()
+            if len(partes) >= 3:
+                nombre_cliente = f"{partes[0][0]}. {partes[1][0]}. {' '.join(partes[2:])}"
+
+        data.append([
+            Paragraph(str(pqrs.numero_radicado), style_normal),
+            Paragraph(pqrs.fecha_radicado.strftime("%Y-%m-%d %H:%M"), style_normal),
+            Paragraph(pqrs.tipo_radicado, style_normal),
+            Paragraph(pqrs.get_estado_display(), style_normal),
+            Paragraph(nombre_cliente, style_normal),
+            Paragraph(pqrs.comentarios[:80] + '...' if len(pqrs.comentarios) > 80 else pqrs.comentarios, style_normal),
+            Paragraph(fecha_respuesta, style_normal)
+        ])
+
+    # Crear tabla con ajuste automático
+    table = Table(data, colWidths=[0.6 * inch, 1.1 * inch, 0.7 * inch, 0.8 * inch,
+                                   1.2 * inch, 2.2 * inch, 1.0 * inch])
+
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4472C4')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#D9E1F2')),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#7F7F7F')),
+        ('WORDWRAP', (0, 0), (-1, -1)),
+        ('LEADING', (0, 0), (-1, -1), 10),
+    ]))
+
+    elements.append(table)
+    elements.append(Spacer(1, 12))
+
+    # Pie de página con fecha
+    elements.append(Paragraph(
+        f"<i>Generado el: {datetime.now().strftime('%Y-%m-%d %H:%M')}</i>",
+        styles['Italic']))
+
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+    return response
 
 
 def actualizar_pqrs(request, numero_radicado):

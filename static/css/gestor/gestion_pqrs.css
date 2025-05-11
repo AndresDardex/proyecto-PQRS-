@@ -138,6 +138,7 @@ body {
     flex-wrap: wrap; /* Para responsive en pantallas pequeñas */
 }
 
+
 /* -------------------- BOTONES -------------------- */
 .btn {
     padding: 0.75rem 1.5rem;
@@ -162,37 +163,17 @@ body {
 .btn-filter { background-color: var(--primary-color); color: var(--white); }
 .btn-filter:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
 
-.btn-export { background-color: var(--success-color); color: var(--white); }
-.btn-export:hover { background-color: var(--success-hover); transform: translateY(-2px); }
+.btn-clear { background-color: var(--success-color); color: var(--white); }
+.btn-clear:hover { background-color: var(--success-hover); transform: translateY(-2px); }
+
+.btn-export { background-color: var(--danger-color); color: var(--white); }
+.btn-export:hover { background-color: var(--danger-hover); transform: translateY(-2px); }
 
 .btn-back { background-color: var(--secondary-color); color: var(--white); }
 .btn-back:hover { background-color: var(--secondary-hover); transform: translateY(-2px); }
 
 .btn-logout { background-color: var(--danger-color); color: var(--white); }
 .btn-logout:hover { background-color: var(--danger-hover); transform: translateY(-2px); }
-
-/* Botón Limpiar - Mismo estilo que Filtrar pero con colores de Logout */
-.btn-clear {
-    background-color: var(--danger-color);  /* Rojo del logout */
-    color: var(--white);
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: var(--transition);
-    border: none;
-    text-decoration: none;
-    font-size: 1rem;
-}
-
-.btn-clear:hover {
-    background-color: var(--danger-hover);  /* Rojo oscuro del logout */
-    transform: translateY(-2px);
-}
 
 .btn-clear i {
     color: var(--white);
