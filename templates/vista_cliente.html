@@ -17,7 +17,7 @@
                 <img src="{% static 'img/business.jpg' %}" alt="Imagen 2" class="carousel-image">
                 <img src="{% static 'img/supermarket.jpg' %}" alt="Imagen 3" class="carousel-image">
             </div>
-            <div class="carousel-controls">
+            <div class="carousel-controls">f
                 <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
                 <div class="carousel-indicators">
                     <span class="indicator active"></span>
@@ -41,6 +41,9 @@
                 </a>
                 <a href="{% url 'listar_pqrs' %}" class="btn btn-primary">
                     <i class="fas fa-list-ul"></i> Ver mis PQRS
+                </a>
+                <a href="{% url 'cambiar_contrasena' %}" class="btn btn-primary">
+                    <i class="fas fa-key"></i> Cambiar contraseña
                 </a>
                 <a href="{% url 'cerrar_sesion' %}" class="btn btn-secondary">
                     <i class="fas fa-sign-out-alt"></i> Cerrar sesión
